@@ -1,0 +1,9 @@
+---
+alias: 'Switch hallway ceiling off'
+description: >-
+  Controls the hallway hue ceiling light with the sonoff mini switch
+id: c2153826-fa86-4448-91a5-53791f86a5f6
+service: hassio.addon_stdin
+data:
+  addon: core_rpc_shutdown
+  input: test-pc

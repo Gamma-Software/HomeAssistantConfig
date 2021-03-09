@@ -1,0 +1,15 @@
+---
+#
+# I should optimize this to create only one script by combinate the triggers
+#
+
+alias: 'Switch all lights off when everybodies is gone'
+mode: queued
+trigger:
+  platform: state
+  entity_id: person.valentin, person.priscillia
+  from: 'home'
+  to: 'not_home'
+action:
+  service: automation.trigger
+  entity_id: automation.switch_all_lights_off_on

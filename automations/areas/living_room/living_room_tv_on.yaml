@@ -1,0 +1,17 @@
+---
+alias: 'Turn lights on when tv on after sun down'
+mode: queued
+description: >-
+  Controls the living room light play when tv is on
+trigger:
+  - platform: state
+    entity_id: sensor.tv_stand_on
+    from: "False"
+    to: "True"
+condition:
+  condition: state  # from sunset until sunrise
+  entity_id: sun.sun
+  state: 'below_horizon'
+action:
+  - service: scene.turn_on
+    entity_id: scene.film_time

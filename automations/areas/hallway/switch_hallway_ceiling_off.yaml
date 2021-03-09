@@ -1,0 +1,15 @@
+---
+alias: 'Switch hallway ceiling off'
+mode: queued
+trigger:
+  - platform: state
+    entity_id:
+      - switch.sonoff_mini_hallway
+      - switch.sonoff_mini_kitchen
+condition:
+  - condition: state
+    entity_id: 'light.hallway_lights'
+    state: 'on'
+action:
+  - service: light.turn_off
+    entity_id: light.hallway_lights

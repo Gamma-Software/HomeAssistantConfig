@@ -1,0 +1,10 @@
+---
+alias: 'Start music'
+mode: queued
+description: Start music
+trigger:
+  platform: state
+  entity_id: sensor.control_home_switch
+  to: '2_click'
+action:
+  - service: script.play_music
