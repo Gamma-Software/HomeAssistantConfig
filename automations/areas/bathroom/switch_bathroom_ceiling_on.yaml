@@ -1,0 +1,14 @@
+---
+alias: 'Switch bathroom ceiling on'
+mode: queued
+description: >-
+  Controls the bathroom hue ceiling light with the sonoff mini switch
+trigger:
+  platform: state
+  entity_id: switch.sonoff_mini_bathroom
+  to: 'on'
+action:
+  - service: light.turn_on
+    entity_id: light.hue_adore_spot_1
+  - service: light.turn_on
+    entity_id: light.hue_adore_spot_2

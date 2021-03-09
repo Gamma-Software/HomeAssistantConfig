@@ -1,0 +1,12 @@
+---
+alias: 'Switch restroom ceiling off'
+mode: queued
+description: >-
+  Controls the restroom hue ceiling light with the sonoff mini switch
+trigger:
+  platform: state
+  entity_id: switch.sonoff_mini_restroom
+  to: 'off'
+action:
+  - service: light.turn_off
+    entity_id: light.restroom_lights

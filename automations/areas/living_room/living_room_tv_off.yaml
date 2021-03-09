@@ -1,0 +1,16 @@
+---
+alias: 'Turn lights off when  tv on after sun down'
+mode: queued
+description: >-
+  Controls the living room light play when tv is off
+trigger:
+  - platform: state
+    entity_id: sensor.tv_stand_on
+    from: "True"
+    to: "False"
+action:
+  - delay: 00:00:20
+  - service: light.turn_off
+    entity_id: light.hue_play_1
+  - service: light.turn_off
+    entity_id: light.hue_play_2

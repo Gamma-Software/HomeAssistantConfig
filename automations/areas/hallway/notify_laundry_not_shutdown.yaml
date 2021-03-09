@@ -1,0 +1,16 @@
+---
+alias: 'Notify laundry is not turn off'
+mode: queued
+trigger:
+  platform: state
+  entity_id: binary_sensor.contact_sensor
+  to: 'off'
+condition:
+  condition: state
+  entity_id: sensor.machine_a_laver_le_linge_on
+  state: "False"
+action:
+  - service : light.turn_on
+    data:
+      entity_id: light.yeelight_stripe_buandrie
+      color_name: red

@@ -14,37 +14,37 @@
 
 # This is the folder
 !integrations
-!integrations/*
+!integrations/**
 !lovelace
-!lovelace/*
+!lovelace/**
 !custom_components
-!custom_components/*
+!custom_components/**
 !appdaemon
-!appdaemon/*
+!appdaemon/**
 !automations
-!automations/*
+!automations/**
 !blueprints
-!blueprints/*
+!blueprints/**
 !customizations
-!customizations/*
+!customizations/**
 !deps
-!deps/*
+!deps/**
 !entities
-!entities/*
+!entities/**
 !esphome
-!esphome/*
+!esphome/**
 !image
-!image/*
+!image/**
 !scenes
-!scenes/*
+!scenes/**
 !scripts
-!scripts/*
+!scripts/**
 !themes
-!themes/*
+!themes/**
 !tts
-!tts/*
+!tts/**
 !www
-!www/*
+!www/**
 
 # Ignore folders.
 .storage

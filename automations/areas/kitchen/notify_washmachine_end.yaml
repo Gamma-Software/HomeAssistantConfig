@@ -1,0 +1,18 @@
+---
+alias: 'Notify washmachine end'
+mode: parallel
+trigger:
+  platform: state
+  entity_id: sensor.machine_a_laver_la_vaisselle_on
+  to: 'False'
+  for:
+    minutes: 3
+action:
+  - service: notify.mobile_app_mi_a3
+    data:
+      message: Valentin la machine a laver la vaisselle est terminee
+      title: Lave vaisselle terminee
+  - service: notify.mobile_app_priscillias_iphone
+    data:
+      message: Priscillia la machine a laver la vaisselle est terminee
+      title: Lave vaisselle terminee

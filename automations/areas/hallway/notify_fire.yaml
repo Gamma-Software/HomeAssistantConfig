@@ -1,0 +1,16 @@
+---
+alias: 'Notify fire'
+mode: parallel
+trigger:
+  platform: state
+  entity_id: binary_sensor.smoke_sensor
+  to: 'on'
+action:
+  - service: notify.mobile_app_mi_a3
+    data:
+      message: Valentin le detecteur de fumee s est declenche
+      title: Detection de fumee
+  - service: notify.mobile_app_priscillias_iphone
+    data:
+      message: Priscillia e detecteur de fumee s est declenche
+      title: Detection de fumee

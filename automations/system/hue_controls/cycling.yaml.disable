@@ -1,0 +1,11 @@
+---
+alias: set_hue_polling_interval
+trigger:
+  platform: state
+  entity_id: input_number.hue_polling_interval
+action:
+  - service: fasthue.set_update_interval
+    entity_id: sensor.hue_polling_interval
+    data_template:
+      scan_interval:
+        seconds: '{{states("input_number.hue_polling_interval") | int}}'

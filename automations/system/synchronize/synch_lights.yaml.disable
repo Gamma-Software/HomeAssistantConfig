@@ -1,0 +1,29 @@
+---
+alias: 'Synchronize lights'
+mode: queued
+trigger:
+  platform: event
+  event_type: state_changed
+  event_data:
+    entity_id: light.all
+condition:
+  condition: template
+  value_template: >
+    {{ ('old_state' in trigger.event.data and 'new_state' in trigger.event.data)
+       and ( trigger.event.data.new_state.attributes.brightness != trigger.event.data.old_state.attributes.brightness
+       or trigger.event.data.new_state.attributes.color_temp != trigger.event.data.old_state.attributes.color_temp)}}
+action:
+  - service: system_log.write
+    data:
+      message: "Brightness {{ trigger.event.data.new_state.attributes.brightness |int }}; Color {{ trigger.event.data.new_state.attributes.color_temp |int }}"
+      level: info
+  - service: light.turn_on
+    data_template:
+      brightness: brightness_change
+      color_temp: color_temp_change
+      entity_id: >
+        {%- for light in states.light -%}
+          {%- if light.state == 'on' -%}
+            {{ light.entity_id }},
+          {%- endif -%}
+        {%- endfor -%}

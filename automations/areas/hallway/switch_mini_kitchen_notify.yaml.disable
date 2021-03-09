@@ -1,0 +1,17 @@
+---
+alias: 'Mini kitchen event'
+mode: queued
+trigger:
+  platform: event
+  event_type: state_changed
+  event_data:
+    entity_id: automation.switch_hallway_ceiling_on
+condition:
+  condition: template
+  value_template: >
+    {{ now().timestamp() - as_timestamp(states.automation.switch_hallway_ceiling_on.last_triggered) > 60 }}
+action:
+  service: system_log.write
+  data:
+    message: State changed from {{ trigger.event.data.old_state }} to {{ trigger.event.data.new_state }}
+    title: Hallway triggered
