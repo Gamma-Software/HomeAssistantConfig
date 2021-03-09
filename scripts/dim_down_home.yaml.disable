@@ -1,0 +1,81 @@
+---
+# This is my Sunlight script. It uses the custom Ciradian Lighting integration.
+#
+# The Circadian Lighting integration is very nice, but fails to handle lights
+# correctly when they turn off or are handled by groups. After I got sick of it
+# I wrote this little script.
+#
+# This script allows one to apply the "Sun" to any light, at any moment. It
+# checks if the target lights support color, color temperature or just
+# brightness and applies the correct values that belong to the light.
+#
+# This script is a one-shot. It does not keep the light updated, which was my
+# goal. Home Assistant has automations, I can just call it more often.
+#
+# It offers 2 transition settings: `transition` that is used for regular
+# transitions and the `turn_on_transition` which is used then the light is
+# turned on.
+#
+# By default it will not turn on a light, `turn_on` has to be set to true to
+# do that. This allows this script to be called without turning on a light that
+# is currently set to off.
+#
+# Used integration: https://github.com/claytonjn/hass-circadian_lighting
+#
+# Example: Set sunlight, without turning it on
+#
+# - service: script.turn_on
+#   entity_id: script.sunlight
+#   data:
+#    entities: [light.living_room, light.kitchen]
+#
+# Example: Set sunlight, turning it on when off, custom turn on transition
+#
+# - service: script.turn_on
+#   entity_id: script.sunlight
+#   data:
+#    entities: [light.living_room]
+#    turn_on: true
+#    turn_on_transition: 10
+#
+
+alias: Dim down home
+description: Dim the light at home
+mode: parallel
+max: 100
+
+fields:
+  entities:
+    description: The entities to apply the sun on (list)
+    example: "[light.living_room, light.kitchen, all]"
+  brightness:
+    description: Brightness in %, overrides circadian brightness
+    example: 75
+  mireds:
+    description: Color temperatures in Mireds, overrides circadian brightness
+    example: 100
+
+sequence:
+  - repeat:
+      count: "{{ entities | length }}"
+      sequence:
+        - variables:
+            entity: "{{ entities[repeat.index-1] }}"
+        - condition: template
+          value_template: "{{ is_state(entity, 'on') }}"
+        - variables:
+            supports_color_temp: >-
+              {{ state_attr(entity, 'supported_features') | bitwise_and(2) == 2 }}
+        - choose:
+            - conditions: "{{ supports_color_temp }}"
+              sequence:
+                - service: light.turn_on
+                  data:
+                    entity_id: "{{ entity }}"
+                    brightness_pct: "{{ brightness }}"
+                    color_temp: "{{ color_temp }}"
+          default:
+            - service: light.turn_on
+              data:
+                entity_id: "{{ entity }}"
+                brightness_pct: "{{ brightness }}"

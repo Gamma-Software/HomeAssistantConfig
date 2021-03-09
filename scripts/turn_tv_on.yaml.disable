@@ -1,0 +1,14 @@
+---
+alias: 'Turn tv on'
+sequence:
+  - service: wake_on_lan.send_magic_packet
+    data:
+      mac: "64:E7:D8:75:2C:EE"
+  - service: media_player.play_media
+    entity_id: media_player.samsung_tv
+    media_content_id: 590
+    media_content_type: channel
+  - service: light.turn_on
+    entities:
+      - light.hue_play_1
+      - light.hue_play_2
