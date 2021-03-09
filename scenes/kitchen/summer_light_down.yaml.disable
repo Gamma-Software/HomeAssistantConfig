@@ -1,0 +1,20 @@
+---
+# Scene for the entire house to be dimmed down at the minimum for the eyes not to be bothered
+#
+name: Home sleep mode
+id: a3120f38-6b95-4d38-b396-98536954fb3c
+entities:
+  light.couloir:
+    brightness: 0
+    color_temp: 500
+    state: 'on'
+  light.cuisine:
+    brightness: 0
+    color_temp: 500
+    state: 'on'
+  light.yeelight_ceiling_entry:
+    brightness: 0
+    color_temp: 500
+    state: 'on'
+  light.yeelight_ceiling_entry_nightlight:
+    state: 'on'

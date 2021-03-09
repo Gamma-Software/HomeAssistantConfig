@@ -1,0 +1,10 @@
+---
+# Scene for the entire house to be dimmed down at the minimum for the eyes not to be bothered
+#
+name: Film time
+entities:
+  light.yeelight_ceiling_living_room: "off"
+  light.hue_play_1:
+    state: "on"
+  light.hue_play_2:
+    state: "on"
