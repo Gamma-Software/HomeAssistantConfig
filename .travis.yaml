@@ -1,14 +1,16 @@
 language: python
-jobs:
-  include:
-    name: 
-    - "Verify home assistant"
-    python:
-    - "3.7"
-    before_install:
-    - mv travis_secrets.yaml secrets.yaml
-    - sudo apt-get install -y libudev-dev
-    install:
-    - pip3 install homeassistant
-    script:
-    - hass -c . --script check_config
+cache: pip
+python:
+- "3.7"
+before_install:
+- "sudo apt-get install -y libudev-dev"
+- "mv travis_secrets.yaml secrets.yaml"
+- "sudo mkdir -p /ssl/ && sudo touch /ssl/fullchain.pem"
+- "sudo mkdir -p /ssl/ && sudo touch /ssl/privkey.pem"
+- "hass --version"
+- "ls"
+install:
+- "pip3 install homeassistant"
+script:
+- "hass -c $(pwd) --script check_config | tee check.output"
+- '! less check.output | grep -q "Failed config"'
