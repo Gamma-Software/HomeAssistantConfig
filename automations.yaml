@@ -1,0 +1,31 @@
+- id: '1609768751604'
+  alias: Automated Daily Snapshot
+  description: ''
+  use_blueprint:
+    path: vorion/create-automated-backups-every-day.yaml
+    input:
+      trigger_time: 0:00:00
+- id: '1609769090432'
+  alias: Low battery level detection & notification for all battery sensors
+  description: ''
+  use_blueprint:
+    path: Sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      day: '0'
+      threshold: 15
+      exclude:
+        entity_id: []
+        device_id:
+        - c111cc07e5bf4388965528bb4f6524dd
+        - 8046c1cd6505f38bc8925b69cf273b7c
+        - 9f52f0347203026b98fc622c62157ff5
+        - 36d54fdb943a81ff181fbc450d6d2b2a
+        - 56c2fe262204615095781c78eec629ba
+        - 8b06b8df0da2be9d8a2ff7f76dde6972
+        - 3c4bca9957798c543850248feb9ec9ba
+        - 2d30b4d78c3c495bdf7ebb7fb414cde5
+      actions:
+      - service: notify.mobile_app_mi_a3
+        data:
+          message: Low battery on entity
+          title: Low battery on entity
