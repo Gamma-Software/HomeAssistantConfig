@@ -9,6 +9,8 @@
 !*.dash
 !*.js
 !*.disable
+!.travis.yaml
+!travis_secrets.yaml
 
 # This is the folder
 !integrations
