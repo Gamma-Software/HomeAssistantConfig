@@ -1,0 +1,12 @@
+---
+# Integration https://www.home-assistant.io/integrations/samsungtv/
+samsungtv:
+  host: 192.168.1.8
+  turn_on_action:
+    - service: wake_on_lan.send_magic_packet
+      data:
+        mac: "64:e7:d8:75:2c:ee"
+    - service: light.turn_on
+      data:
+        entity_id: light.hue_play_1
+        transition: 5
