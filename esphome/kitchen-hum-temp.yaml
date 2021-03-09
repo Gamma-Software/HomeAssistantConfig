@@ -1,0 +1,35 @@
+esphome:
+  name: kitchen-hum-temp
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: "Freebox-PiVal"
+  password: "A2295PiValNet0"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Kitchen-Hum-Temp"
+    password: "31w7l93BDFMN"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "Jslmdm0&"
+
+ota:
+  password: "Jslmdm0&"
+
+sensor:
+  - platform: dht
+    pin: GPIO2
+    model: DHT11
+    temperature:
+      name: "Kitchen Temperature"
+    humidity:
+      name: "Kitchen Humidity"
+    update_interval: 60s
