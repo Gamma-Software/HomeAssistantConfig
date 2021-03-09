@@ -1,0 +1,19 @@
+---
+alias: 'Change home light attributes'
+mode: queued
+trigger:
+  platform: state
+  entity_id: input_number.home_init_brightness, input_number.home_init_temp
+condition:
+  - condition: numeric_state
+    entity_id: input_number.home_init_brightness
+    above: 1 # if the number is 0 another scripts plays on (Dim lights on when brightness at 0)
+action:
+  - service: light.turn_on
+    data_template:
+      entity_id: >
+        {{ states.light | selectattr('state','eq','on') | map(attribute='entity_id') | join(',') }}
+      brightness_pct: >
+        {{ states('input_number.home_init_brightness') | int }}
+      color_temp: >
+        {{ states('input_number.home_init_temp') | int }}

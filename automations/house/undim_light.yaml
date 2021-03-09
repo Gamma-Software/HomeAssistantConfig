@@ -1,0 +1,14 @@
+---
+alias: 'Undim lights on when brightness above 1'
+mode: queued
+trigger:
+  platform: numeric_state
+  entity_id: input_number.home_current_brightness
+  above: 1
+action:
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.dim_down_light
+  - service: input_number.set_value
+    data_template:
+        entity_id: input_boolean.home_current_brightness
+        value: input_boolean.home_init_brightness

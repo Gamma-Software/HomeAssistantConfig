@@ -1,0 +1,18 @@
+---
+alias: 'Switch all lights off when Button off of the bedroom switch is hold'
+mode: queued
+trigger:
+  - platform: state
+    entity_id: sensor.bedroom_dimmer
+    to: '4_hold'
+  - platform: state
+    entity_id: sensor.bedroom_dimmer
+    to: '4_hold_up'
+  - platform: state
+    entity_id: sensor.control_home_switch
+    to: '4_hold'
+  - platform: state
+    entity_id: sensor.control_home_switch
+    to: '4_hold_up'
+action:
+  - service: script.shutdown_home
