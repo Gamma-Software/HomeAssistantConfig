@@ -1,10 +1,16 @@
 language: python
+cache: pip
 python:
 - "3.7"
 before_install:
-- mv travis_secrets.yaml secrets.yaml
-- sudo apt-get install -y libudev-dev
+- "sudo apt-get install -y libudev-dev"
+- "mv travis_secrets.yaml secrets.yaml"
+- "sudo mkdir -p /ssl/ && sudo touch /ssl/fullchain.pem"
+- "sudo mkdir -p /ssl/ && sudo touch /ssl/privkey.pem"
+- "hass --version"
+- "ls"
 install:
-- pip3 install homeassistant
+- "pip3 install homeassistant"
 script:
-- hass -c . --script check_config
+- "hass -c $(pwd) --script check_config | tee check.output"
+- '! less check.output | grep -q "Failed config"'
