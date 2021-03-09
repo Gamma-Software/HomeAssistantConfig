@@ -1,0 +1,6 @@
+---
+platform: group
+name: Pila's Office Lights
+entities:
+  - light.hue_white_candle_1
+  - light.hue_white_candle_2

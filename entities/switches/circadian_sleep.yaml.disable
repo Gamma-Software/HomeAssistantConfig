@@ -1,0 +1,23 @@
+---
+# Circadian Lighting slowly synchronizes your color changing lights with the
+# regular naturally occuring color temperature of the sky throughout the day.
+#
+# This switch allows me to enable or disable this feature on the lights
+# on our garden wall.
+#
+# https://github.com/claytonjn/hass-circadian_lighting
+#
+platform: template
+switches:
+  circadian_sleep_mode:
+    unique_id: 'circadian_sleep_mode'
+    turn_off:
+      service: system_log.write
+      data:
+        message: 'Circadian exits sleep mode'
+        level: info
+    turn_on:
+      service: system_log.write
+      data:
+        message: 'Circadian enters sleep mode'
+        level: info

@@ -1,0 +1,9 @@
+---
+# Create a switch to remotely turn on and off the val's office computer
+#
+# https://www.juanmtech.com/use-home-assistant-to-turn-your-computer-on-and-off/
+#
+platform: wake_on_lan
+name: "Val's office computer"
+mac: "0C:9D:92:0F:17:81"
+host: 10.0.0.14

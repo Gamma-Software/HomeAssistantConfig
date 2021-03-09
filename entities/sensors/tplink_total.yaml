@@ -1,0 +1,24 @@
+---
+platform: template
+sensors:
+  tp_link_watts_total:
+    value_template: >
+      {%- if not is_state("sensor.machine_a_laver_le_linge_watts","unknown") and not is_state("sensor.machine_a_laver_la_vaisselle_watts","unknown") and not is_state("sensor.tv_stand_watts","unknown") -%}
+       {{ ((states.sensor.tv_stand_watts.state | float) + (states.sensor.machine_a_laver_le_linge_watts.state | float) + (states.sensor.machine_a_laver_la_vaisselle_watts.state | float)) | round(2) }}
+      {%- endif -%}' 
+    friendly_name: 'Consommation Actuelle'
+    unit_of_measurement: 'W'
+  tp_link_total_kwh:
+    value_template: >
+      {%- if not is_state("sensor.machine_a_laver_le_linge_total_kwh","unknown") and not is_state("sensor.machine_a_laver_la_vaisselle_total_kwh","unknown") and not is_state("sensor.tv_stand_total_kwh","unknown") -%}
+        {{ ((states.sensor.tv_stand_total_kwh.state | float) + (states.sensor.machine_a_laver_le_linge_total_kwh.state | float) + (states.sensor.machine_a_laver_la_vaisselle_total_kwh.state | float)) | round(2) }} 
+      {%- endif -%}' 
+    friendly_name: 'Consommation Totale"'
+    unit_of_measurement: 'kWh'
+  tp_link_today_kwh:
+    value_template: >
+      {%- if not is_state("sensor.machine_a_laver_le_linge_today_kwh","unknown") and not is_state("sensor.machine_a_laver_la_vaisselle_today_kwh","unknown") and not is_state("sensor.tv_stand_today_kwh","unknown") -%}
+        {{ ((states.sensor.tv_stand_today_kwh.state | float) + (states.sensor.machine_a_laver_le_linge_today_kwh.state | float) + (states.sensor.machine_a_laver_la_vaisselle_today_kwh.state | float)) | round(2) }} 
+      {%- endif -%}' 
+    friendly_name: 'Consommation Journalière'
+    unit_of_measurement: 'kWh' 

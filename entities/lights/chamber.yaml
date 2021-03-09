@@ -1,0 +1,6 @@
+---
+platform: group
+name: Chamber Lights
+entities:
+  - light.hue_color_wall
+  - light.hue_color_wall_1

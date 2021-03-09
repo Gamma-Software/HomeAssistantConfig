@@ -1,0 +1,4 @@
+---
+name: valentin_telegram
+platform: telegram
+chat_id: !secret telegram_valentin

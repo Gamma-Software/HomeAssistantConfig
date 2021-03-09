@@ -1,0 +1,5 @@
+---
+platform: group
+name: Entry Lights
+entities:
+  - light.yeelight_ceiling_entry

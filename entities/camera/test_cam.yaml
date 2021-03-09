@@ -1,0 +1,4 @@
+---
+platform: generic
+name: Cam stream
+stream_source: http://192.168.1.41:8000/

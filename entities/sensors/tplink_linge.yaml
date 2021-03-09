@@ -1,0 +1,30 @@
+---
+platform: template
+sensors:
+  machine_a_laver_le_linge_amps:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_le_linge','friendly_name') }} Current"
+    value_template: "{{ state_attr('switch.machine_a_laver_le_linge','current_a') | float }}"
+    unit_of_measurement: 'A'
+  machine_a_laver_le_linge_watts:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_le_linge','friendly_name') }} Current Consumption"
+    value_template: "{{ state_attr('switch.machine_a_laver_le_linge','current_power_w') | float }}"
+    unit_of_measurement: 'W'
+  machine_a_laver_le_linge_total_kwh:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_le_linge','friendly_name') }} Total Consumption"
+    value_template: "{{ state_attr('switch.machine_a_laver_le_linge','total_energy_kwh') | float }}"
+    unit_of_measurement: 'kWh'
+  machine_a_laver_le_linge_volts:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_le_linge','friendly_name') }} Voltage"
+    value_template: "{{ state_attr('switch.machine_a_laver_le_linge','voltage') | float }}"
+    unit_of_measurement: 'V'
+  machine_a_laver_le_linge_today_kwh:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_le_linge','friendly_name') }} Today's Consumption"
+    value_template: "{{ state_attr('switch.machine_a_laver_le_linge','today_energy_kwh') | float }}"
+    unit_of_measurement: 'kWh'
+  machine_a_laver_le_linge_daily_cost:
+    value_template: '{{ (states.switch.machine_a_laver_le_linge.attributes["Daily consumption"] | replace(" kW", "") | float * 0.084) | round(2) }}'
+    unit_of_measurement: 'p'
+  machine_a_laver_le_linge_state:
+    value_template: "{{ state_attr('switch.machine_a_laver_le_linge','current_power_w') | float > 5 }}"
+  machine_a_laver_le_linge_on:
+    value_template: "{{ state_attr('switch.machine_a_laver_le_linge','current_power_w') | float > 1 }}"

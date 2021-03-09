@@ -1,0 +1,4 @@
+---
+platform: switch
+name: Val's office light
+entity_id: switch.sonoff_mini_vals_office

@@ -1,0 +1,8 @@
+---
+
+platform: samsungtv_tizen
+name: "samsung_tv"
+host: "192.168.1.8"
+mac: "64:E7:D8:75:2C:EE"
+api_key: "1260ab5c-2d23-487e-b037-69165bf6c349"
+device_id: "da104db7-b7d3-88e8-8db3-14fea59c0263"

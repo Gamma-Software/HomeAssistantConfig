@@ -1,0 +1,5 @@
+---
+platform: mqtt
+name: "Number of plane passing home today"
+state_topic: "home/raspi/cergy_flights"
+expire_after: 90000 #After 25 hour
