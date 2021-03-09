@@ -1,0 +1,8 @@
+---
+platform: group
+name: Living room Lights
+entities:
+  - light.hue_play_1
+  - light.hue_play_2
+  - light.yeelight_ceiling_living_room
+  - light.hue_ambiance_spot_1

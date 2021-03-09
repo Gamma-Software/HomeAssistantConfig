@@ -5,6 +5,44 @@
 !*.yaml
 !.gitignore
 !*.md
+!*.py
+!*.dash
+!*.js
+!*.disable
+
+# This is the folder
+!integrations
+!integrations/*
+!lovelace
+!lovelace/*
+!custom_components
+!custom_components/*
+!appdaemon
+!appdaemon/*
+!automations
+!automations/*
+!blueprints
+!blueprints/*
+!customizations
+!customizations/*
+!deps
+!deps/*
+!entities
+!entities/*
+!esphome
+!esphome/*
+!image
+!image/*
+!scenes
+!scenes/*
+!scripts
+!scripts/*
+!themes
+!themes/*
+!tts
+!tts/*
+!www
+!www/*
 
 # Ignore folders.
 .storage

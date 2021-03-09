@@ -1,0 +1,27 @@
+---
+alias: 'Dim lights on'
+mode: queued
+trigger:
+  platform: state
+  entity_id: input_boolean.dim_down_light
+  to: 'on'
+action:
+  - service: light.turn_on
+    data_template:
+      entity_id: >
+        {{ states.light | selectattr('state','eq','on') | map(attribute='entity_id') | join(',') }}
+      brightness_pct: >
+        {{ states('input_number.dim_lights_brightness') | int }}
+  # Handle yeelight ceiling lights
+  - service: light.turn_on
+    data_template:
+      entity_id: >
+        {%- if light.yeelight_ceiling_entry_nightlight.state == 'on' or light.yeelight_ceiling_entry.state == 'on' -%}
+          {{ light.yeelight_ceiling_entry_nightlight }},
+        {%- endif -%}
+  - service: light.turn_on
+    data_template:
+      entity_id: >
+        {%- if light.yeelight_ceiling_living_room_nightlight.state == 'on' or light.yeelight_ceiling_living_room.state == 'on' -%}
+          {{ light.yeelight_ceiling_living_room_nightlight }},
+        {%- endif -%}

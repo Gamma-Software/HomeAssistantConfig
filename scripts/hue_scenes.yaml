@@ -1,0 +1,7 @@
+---
+alias: 'Chamber hue scene'
+sequence:
+  - service: hue.hue_activate_scene
+    data:
+      group_name: "Chambre"
+      scene_name: "Aurore boreale"

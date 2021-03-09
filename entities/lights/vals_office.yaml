@@ -1,0 +1,5 @@
+---
+platform: group
+name: Val's Office Lights
+entities:
+  - light.val_s_office_light

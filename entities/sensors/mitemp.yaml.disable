@@ -1,0 +1,16 @@
+---
+# The miflora sensor platform allows one to monitor plant soil and air
+# conditions. The Mi Flora plant sensor is a small Bluetooth Low Energy
+# device that monitors the moisture and conductivity of the soil as well
+# as ambient light and temperature.
+#
+# https://www.home-assistant.io/integrations/mitemp_bt/
+#
+platform: mitemp_bt
+mac: '58:2D:34:3A:1D:26'
+name: KitchenTemp
+force_update: true
+monitored_conditions:
+  - temperature
+  - humidity
+  - battery

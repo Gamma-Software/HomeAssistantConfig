@@ -1,0 +1,7 @@
+---
+platform: group
+name: Bathroom Lights
+entities:
+  - light.hue_ambiance_wall_1
+  - light.hue_adore_spot_1
+  - light.hue_adore_spot_2

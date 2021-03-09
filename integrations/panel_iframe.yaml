@@ -1,0 +1,6 @@
+---
+panel_iframe:
+  ide:
+    title: IDE
+    icon: mdi:code-braces
+    url: https://pival.duckdns.org:8321

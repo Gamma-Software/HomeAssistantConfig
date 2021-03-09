@@ -1,0 +1,28 @@
+---
+platform: template
+sensors:
+  machine_a_laver_la_vaisselle_amps:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','friendly_name') }} Current"
+    value_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','current_a') | float }}"
+    unit_of_measurement: 'A'
+  machine_a_laver_la_vaisselle_watts:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','friendly_name') }} Current Consumption"
+    value_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','current_power_w') | float }}"
+    unit_of_measurement: 'W'
+  machine_a_laver_la_vaisselle_total_kwh:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','friendly_name') }} Total Consumption"
+    value_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','total_energy_kwh') | float }}"
+    unit_of_measurement: 'kWh'
+  machine_a_laver_la_vaisselle_volts:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','friendly_name') }} Voltage"
+    value_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','voltage') | float }}"
+    unit_of_measurement: 'V'
+  machine_a_laver_la_vaisselle_today_kwh:
+    friendly_name_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','friendly_name') }} Today's Consumption"
+    value_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','today_energy_kwh') | float }}"
+    unit_of_measurement: 'kWh'
+  machine_a_laver_la_vaisselle_daily_cost:
+    value_template: '{{ (states.switch.machine_a_laver_la_vaisselle.attributes["Daily consumption"] | replace(" kW", "") | float * 0.084) | round(2) }}'
+    unit_of_measurement: 'p'
+  machine_a_laver_la_vaisselle_on:
+    value_template: "{{ state_attr('switch.machine_a_laver_la_vaisselle','current_power_w') | float > 30 }}"

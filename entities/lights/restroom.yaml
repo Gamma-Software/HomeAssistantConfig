@@ -1,0 +1,5 @@
+---
+platform: group
+name: Restroom Lights
+entities:
+  - light.hue_adore_spot_3

@@ -1,0 +1,28 @@
+---
+platform: template
+sensors:
+  tv_stand_amps:
+    friendly_name_template: "{{ state_attr('switch.tv_stand','friendly_name') }} Current"
+    value_template: "{{ state_attr('switch.tv_stand','current_a') | float }}"
+    unit_of_measurement: 'A'
+  tv_stand_watts:
+    friendly_name_template: "{{ state_attr('switch.tv_stand','friendly_name') }} Current Consumption"
+    value_template: "{{ state_attr('switch.tv_stand','current_power_w') | float }}"
+    unit_of_measurement: 'W'
+  tv_stand_total_kwh:
+    friendly_name_template: "{{ state_attr('switch.tv_stand','friendly_name') }} Total Consumption"
+    value_template: "{{ state_attr('switch.tv_stand','total_energy_kwh') | float }}"
+    unit_of_measurement: 'kWh'
+  tv_stand_volts:
+    friendly_name_template: "{{ state_attr('switch.tv_stand','friendly_name') }} Voltage"
+    value_template: "{{ state_attr('switch.tv_stand','voltage') | float }}"
+    unit_of_measurement: 'V'
+  tv_stand_today_kwh:
+    friendly_name_template: "{{ state_attr('switch.tv_stand','friendly_name') }} Today's Consumption"
+    value_template: "{{ state_attr('switch.tv_stand','today_energy_kwh') | float }}"
+    unit_of_measurement: 'kWh'
+  tv_stand_daily_cost:
+    value_template: '{{ (states.switch.tv_stand.attributes["Daily consumption"] | replace(" kW", "") | float * 0.084) | round(2) }}'
+    unit_of_measurement: 'p'
+  tv_stand_on:
+    value_template: "{{ state_attr('switch.tv_stand','current_power_w') | float > 70 }}"

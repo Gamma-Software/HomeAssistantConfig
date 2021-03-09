@@ -1,0 +1,10 @@
+---
+alias: 'Dim lights on when brightness at 0'
+mode: queued
+trigger:
+  platform: numeric_state
+  entity_id: input_number.home_current_brightness
+  below: 1
+action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.dim_down_light
