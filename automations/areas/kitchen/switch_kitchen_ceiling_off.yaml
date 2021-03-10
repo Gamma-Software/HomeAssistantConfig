@@ -3,7 +3,7 @@ alias: 'Switch kitchen ceiling off'
 mode: queued
 trigger:
   platform: state
-  entity_id: switch.sonoff_mini_hallway_2
+  entity_id: switch.kitchen_switch_basic_relay_2
   to: 'off'
 action:
   - service: light.turn_off
