@@ -1,0 +1,64 @@
+esphome:
+  name: kitchen-switch-hum-temp
+  platform: ESP8266
+  board: esp8285
+
+wifi:
+  ssid: "Freebox-PiVal"
+  password: "A2295PiValNet0"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Kitchen-Switch-Temp-Hum"
+    password: "Ceh5ocuTIDpm"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "Jslmdm0&"
+
+ota:
+  password: "Jslmdm0&"
+
+binary_sensor:
+  platform: gpio
+  pin:
+    number: GPIO4
+    mode: INPUT
+    inverted: True
+  name: "Kitchen Switch Basic Button"
+  on_state:
+    switch.toggle: relay
+#  on_double_click:
+#    min_length: 50ms
+#    max_length: 350ms
+#    then:
+#      if:
+#        condition:
+#          switch.is_on: relay
+#        then:
+#          switch.toggle: double_click_relay
+
+switch:
+  - platform: gpio
+    name: "Kitchen Switch Basic Relay"
+    pin: GPIO12
+    id: relay
+#  - platform: output
+#    name: "Kitchen Switch Double Click"
+#    output: double_click_relay
+#    id: double_click_relay
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes
+    
+sensor:
+  - platform: wifi_signal
+    name: "Kitchen Switch WiFi Signal Strength"
+    update_interval: 60s
