@@ -9,7 +9,7 @@
 !*.dash
 !*.js
 !*.disable
-!.travis.yaml
+!.travis.yml
 !travis_secrets.yaml
 
 # This is the folder
