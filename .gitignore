@@ -17,8 +17,6 @@
 !integrations/**
 !lovelace
 !lovelace/**
-!custom_components
-!custom_components/**
 !appdaemon
 !appdaemon/**
 !automations
