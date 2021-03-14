@@ -1,0 +1,6 @@
+---
+platform: mqtt
+name: "Bathroom humidity"
+state_topic: "home/bathroom/humidity"
+unit_of_measurement: "%"
+expire_after: 120 #After 2 min

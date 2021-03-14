@@ -5,7 +5,7 @@ description: >-
   Controls the bathroom hue ceiling light with the sonoff mini switch
 trigger:
   platform: state
-  entity_id: switch.sonoff_mini_bathroom
+  entity_id: switch.bathroom_switch_basic_relay
   to: 'on'
 action:
   - service: light.turn_on

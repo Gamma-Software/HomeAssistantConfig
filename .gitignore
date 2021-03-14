@@ -1,6 +1,8 @@
 # Example .gitignore file for your config dir.
 # An * ensures that everything will be ignored.
 *
+*.pyc
+
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
 !.gitignore
@@ -9,7 +11,7 @@
 !*.dash
 !*.js
 !*.disable
-!.travis.yaml
+!.travis.yml
 !travis_secrets.yaml
 
 # This is the folder

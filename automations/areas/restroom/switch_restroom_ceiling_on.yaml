@@ -3,7 +3,7 @@ alias: 'Switch restroom ceiling on'
 mode: queued
 trigger:
   platform: state
-  entity_id: switch.sonoff_mini_restroom
+  entity_id: switch.restroom_switch_basic_relay
   to: 'on'
 action:
   - service: light.turn_on

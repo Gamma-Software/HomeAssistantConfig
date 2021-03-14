@@ -4,7 +4,7 @@ mode: queued
 trigger:
   - platform: state
     entity_id:
-      - switch.sonoff_mini_hallway
+      - switch.hallway_switch_nexttobathroom_basic_relay
       - switch.hallway_switch_basic_relay
 condition:
   - condition: state

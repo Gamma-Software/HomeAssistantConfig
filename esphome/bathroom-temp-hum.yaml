@@ -1,0 +1,38 @@
+esphome:
+  name: bathroom-temp-hum
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: "Freebox-PiVal"
+  password: "A2295PiValNet0"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "bathroom-temp-hum"
+    password: "CMvPpUSO0yVm"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "Jslmdm0&"
+
+ota:
+  password: "Jslmdm0&"
+  
+sensor:
+  - platform: dht
+    pin: GPIO0
+    model: DHT11
+    temperature:
+      name: "Bathroom Temperature"
+    humidity:
+      name: "Bathroom Humidity"
+    update_interval: 60s
+  - platform: wifi_signal
+    name: "Bathroom WiFi Signal Strength"
+    update_interval: 60s
