@@ -1,8 +1,7 @@
 # Example .gitignore file for your config dir.
 # An * ensures that everything will be ignored.
 *
-
-custom_components/**
+*.pyc
 
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
@@ -20,6 +19,8 @@ custom_components/**
 !integrations/**
 !lovelace
 !lovelace/**
+!custom_components
+!custom_components/**
 !appdaemon
 !appdaemon/**
 !automations
