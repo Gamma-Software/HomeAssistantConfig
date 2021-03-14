@@ -1,4 +1,4 @@
 ---
 platform: switch
 name: Val's office light
-entity_id: switch.sonoff_mini_vals_office
+entity_id: switch.valsoffice_switch_basic_relay

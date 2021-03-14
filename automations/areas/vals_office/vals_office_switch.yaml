@@ -8,4 +8,4 @@ trigger:
     entity_id: sensor.val_s_office_button
 action:
   - service: light.toggle
-    entity_id: light.val_s_office_light
+    entity_id: light.val_s_office_light_2
