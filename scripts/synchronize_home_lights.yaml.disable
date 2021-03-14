@@ -32,13 +32,13 @@
 # Example: Set sunlight, turning it on when off, custom turn on transition
 #
 # - service: script.turn_on
-#   entity_id: script.sunlight
+#   entity_id: script.synchronize_home_lights
 #   data:
 #    entities: [light.living_room]
 #    turn_on: true
 #    turn_on_transition: 10
 #
-alias: synchronize_lights
+alias: "synchronize home lights"
 description: Synchronize the given switched on lights when the attributs changes
 mode: parallel
 max: 100
@@ -46,21 +46,21 @@ max: 100
 fields:
   entities:
     description: The entities to apply the attributs on (list)
-    example: "[light.living_room, light.kitchen]"
   transition:
     description: Transition time for changes (optional, default 2)
-    example: 1.5
   brightness:
     description: Brightness in %, Take this attribut as a trigger to synchronize
-    exemple: 80
   color_temp:
     description: Color Temp, Take this attribut as a trigger to synchronize
-    exemple: 400
+  turn_on:
+    description: Allow this script to turn on the light (optional, default false)
+    example: true
 
 variables:
-  brightness: "{{ brightness | default(true)}}"
-  color_temp: "{{ color_temp | default(true)}}"
+  brightness: "{{ brightness | default(100)}}"
+  color_temp: "{{ color_temp | default(400)}}"
   transition: "{{ transition | default(5) }}"
+  turn_on: "{{ turn_on | default(false) }}"
 
 sequence:
   - repeat:
@@ -69,7 +69,7 @@ sequence:
         - variables:
             entity: "{{ entities[repeat.index-1] }}"
         - condition: template
-          value_template: "{{ is_state(entity, 'on') and turn_on is sameas true or }}"
+          value_template: "{{ turn_on is sameas true or is_state(entity, 'on') }}"
         - variables:
             supports_color: >-
               {{ state_attr(entity, 'supported_features') | bitwise_and(16) == 16 }}
