@@ -1,5 +1,5 @@
 esphome:
-  name: living-room-temp-humidity
+  name: bathroom-temp-hum
   platform: ESP8266
   board: esp01_1m
 
@@ -9,7 +9,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "living-room-temp-humidity"
+    ssid: "bathroom-temp-hum"
     password: "CMvPpUSO0yVm"
 
 captive_portal:
@@ -29,10 +29,10 @@ sensor:
     pin: GPIO0
     model: DHT11
     temperature:
-      name: "Living Temperature"
+      name: "Bathroom Temperature"
     humidity:
-      name: "Living Humidity"
+      name: "Bathroom Humidity"
     update_interval: 60s
   - platform: wifi_signal
-    name: "Living Switch WiFi Signal Strength"
+    name: "Bathroom WiFi Signal Strength"
     update_interval: 60s

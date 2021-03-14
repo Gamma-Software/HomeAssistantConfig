@@ -1,5 +1,5 @@
 esphome:
-  name: living-room-temp-humidity
+  name: pilas-temp-humidity
   platform: ESP8266
   board: esp01_1m
 
@@ -9,7 +9,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "living-room-temp-humidity"
+    ssid: "pilas-room-temp-humidity"
     password: "CMvPpUSO0yVm"
 
 captive_portal:
@@ -29,10 +29,10 @@ sensor:
     pin: GPIO0
     model: DHT11
     temperature:
-      name: "Living Temperature"
+      name: "Pilas Room Temperature"
     humidity:
-      name: "Living Humidity"
+      name: "Pilas Room Humidity"
     update_interval: 60s
   - platform: wifi_signal
-    name: "Living Switch WiFi Signal Strength"
+    name: "Pilas Room WiFi Signal Strength"
     update_interval: 60s
