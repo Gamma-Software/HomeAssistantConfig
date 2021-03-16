@@ -1,0 +1,18 @@
+---
+alias: 'Change home light attributes'
+mode: queued
+trigger:
+  platform: state
+  entity_id: input_number.home_current_brightness, input_number.home_current_temp
+condition:
+  - condition: numeric_state
+    entity_id: input_number.home_current_brightness
+    above: 1 # if the number is 0 another scripts plays on (Dim lights on when brightness at 0)
+action:
+  - service: script.synchronize_home_lights
+    data:
+      entities: [light.bathroom_lights, light.entry_lights, light.hallway_lights, light.kitchen_lights, light.yeelight_ceiling_living_room, light.hue_ambiance_spot_1, light.pila_s_office_lights, light.restroom_lights]
+      brightness: >
+        {{ trigger.event.data.new_state.attributes.brightness | float }}
+      color_temp: >
+        {{ trigger.event.data.new_state.attributes.color_temp | float }}

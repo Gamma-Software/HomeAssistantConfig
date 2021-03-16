@@ -1,0 +1,29 @@
+---
+alias: 'Synchronize lights'
+mode: queued
+trigger:
+  platform: event
+  event_type: state_changed
+action:
+  - service: light.turn_on
+    data: 
+      color_temp: "{{ states('input_number.home_current_temp' | float) }}"
+      brightness: "{{ states('input_number.home_current_brightness' | float) }}"
+    target:
+      entity_id: >
+        {% for light in states['light'] | selectattr('state','eq', 'on') | map(attribute='entity_id') | list %}
+          {% if not is_state_attr(light, 'brightness', states('input_number.home_current_brightness' | float)) or not is_state_attr(light, 'color_temp', states('input_number.home_current_temp' | float)) %}
+            {{light}}
+          {% endif %}
+        {% endfor %}
+  - service: system_log.write
+    data:
+      message: >
+        {% for light in states['light'] | selectattr('state','eq', 'on') | map(attribute='entity_id') | list %}
+          {% if not is_state_attr(light, 'brightness', states('input_number.home_current_brightness' | float)) or not is_state_attr(light, 'color_temp', states('input_number.home_current_temp' | float)) %}
+            {{light}}
+          {% endif %}
+        {% endfor %}
+      level: error
+        
+  

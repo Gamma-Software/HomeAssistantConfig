@@ -1,0 +1,27 @@
+---
+alias: 'Update bright color temp'
+mode: queued
+trigger:
+  platform: event
+  event_type: state_changed
+condition:
+  condition: template
+  value_template: >
+    {{ trigger.event.data.entity_id in ['light.bathroom_lights', 'light.entry_lights', 'light.hallway_lights', 'light.kitchen_lights', 'light.yeelight_ceiling_living_room', 'light.hue_ambiance_spot_1', 'light.pila_s_office_lights', 'light.restroom_lights']
+    and ('brightness' in trigger.event.data.new_state.attributes and 'color_temp' in trigger.event.data.new_state.attributes)
+    and ( trigger.event.data.new_state.attributes.brightness != trigger.event.data.old_state.attributes.brightness
+       or trigger.event.data.new_state.attributes.color_temp != trigger.event.data.old_state.attributes.color_temp)}}
+action:
+  - service: input_number.set_value
+    target:
+      entity_id: input_number.home_current_brightness
+    data:
+      value: "{{ trigger.event.data.new_state.attributes.brightness | float }}"
+  - service: input_number.set_value
+    target:
+      entity_id: input_number.home_current_temp
+    data:
+      value: "{{ trigger.event.data.new_state.attributes.color_temp | float }}"
+  - service: automation.trigger
+    target:
+      entity_id: automation.synchronize_lights
