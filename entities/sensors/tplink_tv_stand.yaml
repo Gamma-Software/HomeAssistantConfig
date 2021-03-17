@@ -25,4 +25,4 @@ sensors:
     value_template: '{{ (states.switch.tv_stand.attributes["Daily consumption"] | replace(" kW", "") | float * 0.084) | round(2) }}'
     unit_of_measurement: 'p'
   tv_stand_on:
-    value_template: "{{ state_attr('switch.tv_stand','current_power_w') | float > 70 }}"
+    value_template: "{{ state_attr('switch.tv_stand','current_power_w') | float > 45 }}"
