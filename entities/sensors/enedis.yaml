@@ -1,0 +1,10 @@
+---
+# enedis
+platform: myEnedis
+token: !secret enedis_token
+code: !secret enedis_livraison
+hc_cout: 0.1369
+hp_cout: 0.1879
+heures_creuses: "[['23:30', '07:30']]"
+heuresCreusesON: true
+scan_interval: 3600
