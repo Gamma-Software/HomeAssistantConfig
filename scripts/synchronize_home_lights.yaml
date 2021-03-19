@@ -41,7 +41,7 @@
 alias: "synchronize home lights"
 description: Synchronize the given switched on lights when the attributs changes
 mode: parallel
-max: 100
+max: 10
 
 fields:
   entities:
