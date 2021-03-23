@@ -10,10 +10,8 @@ lights:
       service: light.turn_on
       entity_id: light.entry_lights
       data:
-        brightness: >
-          {{states('input_number.home_current_brightness') | float}}
-        color_temp: >
-          {{states('input_number.home_current_temp') | float}}
+        kelvin: "{{ state_attr('sensor.circadian_values', 'colortemp') | int }}"
+        brightness_pct: "{{state_attr('switch.circadian_lighting_circadian', 'brightness')|int}}"
     turn_off:
       service: light.turn_off
       entity_id: light.entry_lights
@@ -27,6 +25,12 @@ lights:
           entity_id: input_number.home_current_brightness
         data:
           value: "{{state_attr('light.entry_lights', 'brightness') | float }}"
+      - service: script.synchronize_home_lights
+        data:
+          brightness: >
+            {{states('input_number.home_current_brightness') | float}}
+          color_temp: >
+            {{states('input_number.home_current_temp') | float}}
     set_temperature:
       - service: light.turn_on
         data_template:
@@ -37,3 +41,9 @@ lights:
           entity_id: input_number.home_current_temp
         data:
           value: "{{ state_attr('light.entry_lights', 'color_temp') | float }}"
+      - service: script.synchronize_home_lights
+        data:
+          brightness: >
+            {{states('input_number.home_current_brightness') | float}}
+          color_temp: >
+            {{states('input_number.home_current_temp') | float}}
