@@ -1,6 +1,7 @@
 # Example .gitignore file for your config dir.
 # An * ensures that everything will be ignored.
 *
+custom_components/circadian_lighting/.idea/**
 
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
