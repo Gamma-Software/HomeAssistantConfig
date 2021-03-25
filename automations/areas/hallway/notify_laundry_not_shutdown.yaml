@@ -6,9 +6,9 @@ trigger:
   entity_id: binary_sensor.contact_sensor
   to: 'off'
 condition:
-  condition: state
-  entity_id: sensor.machine_a_laver_le_linge_on
-  state: "False"
+  - condition: state
+    entity_id: sensor.machine_a_laver_le_linge_on
+    state: 'True'
 action:
   - service : light.turn_on
     data:
