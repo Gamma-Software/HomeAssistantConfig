@@ -7,4 +7,4 @@ trigger:
   to: 'on'
 action:
   - service: light.turn_on
-    entity_id: light.restroom_lights
+    entity_id: light.restroom_light_template

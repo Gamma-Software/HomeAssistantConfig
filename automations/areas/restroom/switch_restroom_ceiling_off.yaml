@@ -9,4 +9,4 @@ trigger:
   to: 'off'
 action:
   - service: light.turn_off
-    entity_id: light.restroom_lights
+    entity_id: light.restroom_light_template
