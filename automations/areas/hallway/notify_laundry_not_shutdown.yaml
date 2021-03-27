@@ -9,6 +9,9 @@ condition:
   - condition: state
     entity_id: sensor.machine_a_laver_le_linge_on
     state: 'True'
+  - condition: state
+    entity_id: sensor.machine_a_laver_le_linge_state
+    state: 'False'
 action:
   - service : light.turn_on
     data:
