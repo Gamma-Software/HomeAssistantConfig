@@ -1,4 +1,0 @@
----
-# Bluetooth device tracker
-
-device_tracker: !include_dir_list ../entities/device_tracker
