@@ -2,6 +2,8 @@
 # An * ensures that everything will be ignored.
 *
 custom_components/circadian_lighting/.idea/**
+image
+image/**
 
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
@@ -36,8 +38,6 @@ custom_components/**/*.pyc
 !entities/**
 !esphome
 !esphome/**
-!image
-!image/**
 !scenes
 !scenes/**
 !scripts
