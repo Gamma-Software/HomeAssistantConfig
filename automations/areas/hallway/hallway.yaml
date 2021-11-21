@@ -1,0 +1,13 @@
+---
+alias: "hallway_light_switch_toggle"
+mode: queued
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.hallway_switch_basic_button
+      - binary_sensor.hallway_switch_nexttobathroom_basic_button
+action:
+  - service: light.toggle
+    data: {}
+    target:
+      entity_id: light.hallway_lights

@@ -1,0 +1,12 @@
+---
+alias: "restroom_light_switch_toggle"
+mode: queued
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.restroom_switch_basic_button
+action:
+  - service: light.toggle
+    data: {}
+    target:
+      entity_id: light.restroom_lights

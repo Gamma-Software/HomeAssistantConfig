@@ -1,0 +1,12 @@
+---
+alias: "bathroom_light_switch_toggle"
+mode: queued
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.bathroom_switch_basic_button
+action:
+  - service: light.toggle
+    data: {}
+    target:
+      entity_id: light.bathroom_lights

@@ -1,11 +1,12 @@
 ---
-alias: 'Switch Vals office light'
+alias: "Switch Vals office light"
 mode: queued
 description: >-
   Controls the bathroom hue ceiling light with the sonoff mini switch
 trigger:
   - platform: state
     entity_id: sensor.val_s_office_button
+    to: 1_click
 action:
   - service: light.toggle
-    entity_id: light.val_s_office_light_2
+    entity_id: light.val_s_office_light
