@@ -29,3 +29,59 @@
         data:
           message: Low battery on entity
           title: Low battery on entity
+- id: '1637510138281'
+  alias: Mode cinema
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 60cfe082-7f44-41bf-9582-5bffb835786a
+  condition: []
+  action:
+  - service: light.toggle
+    target:
+      device_id:
+      - f6f898c14b51a0e82b43dfc2fde0e7e8
+      - 473380317da87e6de4da6bb86b528101
+      - d90f0ae9929a98c088b72a15d2824c29
+    data: {}
+  mode: single
+- id: '1637510405644'
+  alias: La balise ShutdownAllEnter est analysée
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: ed5e502e-232f-41a8-a9bb-d34f6c200fc5
+  condition: []
+  action:
+  - service: script.shutdown_home
+  mode: single
+- id: '1637510437979'
+  alias: La balise CinemaTime est analysée
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 60cfe082-7f44-41bf-9582-5bffb835786a
+  condition: []
+  action:
+  - scene: scene.film_time
+  mode: single
+- id: '1637510454414'
+  alias: La balise CinemaTime est analysée
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 60cfe082-7f44-41bf-9582-5bffb835786a
+  condition: []
+  action:
+  - scene: scene.film_time
+  mode: single
+- id: '1637510803857'
+  alias: La balise CinemaTime est analysée
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 60cfe082-7f44-41bf-9582-5bffb835786a
+  condition: []
+  action:
+  - scene: scene.nouvelle_scene
+  mode: single
