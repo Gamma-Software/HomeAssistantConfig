@@ -1,0 +1,3 @@
+platform: ping
+host: cergy-server
+name: "cergy-server"
