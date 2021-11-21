@@ -9,6 +9,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_MOTION,
     DEVICE_CLASS_OPENING,
     DEVICE_CLASS_POWER,
+    DEVICE_CLASS_SMOKE,
 )
 
 try:
@@ -30,14 +31,14 @@ import homeassistant.util.dt as dt_util
 
 from .const import (
     CONF_PERIOD,
-    CONF_BATT_ENTITIES,
     CONF_RESTORE_STATE,
     CONF_DEVICE_RESTORE_STATE,
     CONF_DEVICE_RESET_TIMER,
     DEFAULT_DEVICE_RESET_TIMER,
     KETTLES,
     MANUFACTURER_DICT,
-    MMTS_DICT,
+    MEASUREMENT_DICT,
+    BINARY_SENSOR_DICT,
     DOMAIN,
 )
 
@@ -55,7 +56,7 @@ async def async_setup_entry(hass, config_entry, add_entities):
 
     blemonitor = hass.data[DOMAIN]["blemonitor"]
     bleupdater = BLEupdaterBinary(blemonitor, add_entities)
-    hass.loop.create_task(bleupdater.async_run())
+    hass.loop.create_task(bleupdater.async_run(hass))
     _LOGGER.debug("Binary sensor entry setup finished")
     # Return successful setup
     return True
@@ -71,12 +72,27 @@ class BLEupdaterBinary():
         self.dataqueue = blemonitor.dataqueue["binary"].async_q
         self.config = blemonitor.config
         self.period = self.config[CONF_PERIOD]
-        self.batt_entities = self.config[CONF_BATT_ENTITIES]
         self.add_entities = add_entities
         _LOGGER.debug("BLE binary sensors updater initialized")
 
-    async def async_run(self):
+    async def async_run(self, hass):
         """Entities updater loop."""
+
+        async def async_add_binary_sensor(mac, sensortype, firmware):
+            device_sensors = MEASUREMENT_DICT[sensortype][2]
+            if mac not in sensors_by_mac:
+                sensors = []
+                for sensor in device_sensors:
+                    sensors.insert(device_sensors.index(sensor), globals()[BINARY_SENSOR_DICT[sensor]](
+                        self.config, mac, sensortype, firmware)
+                    )
+                if len(sensors) != 0:
+                    sensors_by_mac[mac] = sensors
+                    self.add_entities(sensors)
+            else:
+                sensors = sensors_by_mac[mac]
+            return sensors
+
         _LOGGER.debug("Binary entities updater loop started!")
         sensors_by_mac = {}
         sensors = []
@@ -87,6 +103,27 @@ class BLEupdaterBinary():
         ts_now = ts_last
         data = None
         await asyncio.sleep(0)
+
+        # Set up binary sensors of configured devices on startup when sensortype is available in device registry
+        if self.config[CONF_DEVICES]:
+            dev_registry = await hass.helpers.device_registry.async_get_registry()
+            for device in self.config[CONF_DEVICES]:
+                mac = device["mac"]
+
+                # get sensortype and firmware from device registry to setup sensor
+                dev = dev_registry.async_get_device({(DOMAIN, mac)}, set())
+                if dev:
+                    mac = mac.replace(":", "")
+                    sensortype = dev.model
+                    firmware = dev.sw_version
+                    sensors = await async_add_binary_sensor(mac, sensortype, firmware)
+                else:
+                    pass
+        else:
+            sensors = []
+
+        # Set up new binary sensors when first BLE advertisement is received
+        sensors = []
         while True:
             try:
                 advevent = await asyncio.wait_for(self.dataqueue.get(), 1)
@@ -103,36 +140,21 @@ class BLEupdaterBinary():
                         hpriority.remove(entity)
                         entity.async_schedule_update_ha_state(True)
             if data:
+                _LOGGER.debug("Data binary sensor received: %s", data)
                 mibeacon_cnt += 1
                 mac = data["mac"]
                 batt_attr = None
                 sensortype = data["type"]
                 firmware = data["firmware"]
-                sw_i, op_i, l_i, mo_i, mn_i, b_i = MMTS_DICT[sensortype][1]
-                if mac not in sensors_by_mac:
-                    sensors = []
-                    if sw_i != 9:
-                        sensors.insert(sw_i, PowerBinarySensor(self.config, mac, sensortype, firmware))
-                    if op_i != 9:
-                        sensors.insert(op_i, OpeningBinarySensor(self.config, mac, sensortype, firmware))
-                    if l_i != 9:
-                        sensors.insert(l_i, LightBinarySensor(self.config, mac, sensortype, firmware))
-                    if mo_i != 9:
-                        sensors.insert(mo_i, MoistureBinarySensor(self.config, mac, sensortype, firmware))
-                    if mn_i != 9:
-                        sensors.insert(mn_i, MotionBinarySensor(self.config, mac, sensortype, firmware))
-                    if len(sensors) != 0:
-                        sensors_by_mac[mac] = sensors
-                        self.add_entities(sensors)
-                else:
-                    sensors = sensors_by_mac[mac]
+                device_sensors = MEASUREMENT_DICT[sensortype][2]
+                sensors = await async_add_binary_sensor(mac, sensortype, firmware)
 
                 if data["data"] is False:
                     data = None
                     continue
 
                 # store found readings per device
-                if (b_i != 9):
+                if "battery" in MEASUREMENT_DICT[sensortype][0]:
                     if "battery" in data:
                         batt[mac] = int(data["battery"])
                         batt_attr = batt[mac]
@@ -145,42 +167,15 @@ class BLEupdaterBinary():
                             batt_attr = batt[mac]
                         except KeyError:
                             batt_attr = None
-                # schedule an immediate update of binary sensors
-                if "switch" in data and (sw_i != 9):
-                    switch = sensors[sw_i]
-                    switch.collect(data, batt_attr)
-                    if switch.pending_update is True:
-                        switch.async_schedule_update_ha_state(True)
-                    elif switch.ready_for_update is False and switch.enabled is True:
-                        hpriority.append(switch)
-                if "opening" in data and (op_i != 9):
-                    opening = sensors[op_i]
-                    opening.collect(data, batt_attr)
-                    if opening.pending_update is True:
-                        opening.async_schedule_update_ha_state(True)
-                    elif opening.ready_for_update is False and opening.enabled is True:
-                        hpriority.append(opening)
-                if "light" in data and (l_i != 9):
-                    light = sensors[l_i]
-                    light.collect(data, batt_attr)
-                    if light.pending_update is True:
-                        light.async_schedule_update_ha_state(True)
-                    elif light.ready_for_update is False and light.enabled is True:
-                        hpriority.append(light)
-                if "moisture" in data and (mo_i != 9):
-                    moisture = sensors[mo_i]
-                    moisture.collect(data, batt_attr)
-                    if moisture.pending_update is True:
-                        moisture.async_schedule_update_ha_state(True)
-                    elif moisture.ready_for_update is False and moisture.enabled is True:
-                        hpriority.append(moisture)
-                if "motion" in data and (mn_i != 9):
-                    motion = sensors[mn_i]
-                    motion.collect(data, batt_attr)
-                    if motion.pending_update is True:
-                        motion.schedule_update_ha_state(True)
-                    elif motion.ready_for_update is False and motion.enabled is True:
-                        hpriority.append(motion)
+                # schedule an immediate update of remote binary sensors
+                for measurement in device_sensors:
+                    if measurement in data:
+                        entity = sensors[device_sensors.index(measurement)]
+                        entity.collect(data, batt_attr)
+                        if entity.pending_update is True:
+                            entity.async_schedule_update_ha_state(True)
+                        elif entity.ready_for_update is False and entity.enabled is True:
+                            hpriority.append(entity)
                 data = None
             ts_now = dt_util.now()
             if ts_now - ts_last < timedelta(seconds=self.period):
@@ -230,7 +225,6 @@ class SwitchingSensor(RestoreEntity, BinarySensorEntity):
             self.ready_for_update = True
             return
         old_state = await self.async_get_last_state()
-        _LOGGER.debug("Restored state: %s", old_state)
         if not old_state:
             self.ready_for_update = True
             return
@@ -378,8 +372,30 @@ class SwitchingSensor(RestoreEntity, BinarySensorEntity):
         self._state = self._newstate
 
 
+class RemoteSinglePressBinarySensor(SwitchingSensor):
+    """Representation of a Remote (single press) Binary Sensor."""
+
+    def __init__(self, config, mac, devtype, firmware):
+        """Initialize the sensor."""
+        super().__init__(config, mac, devtype, firmware)
+        self._measurement = "remote single press"
+        self._name = "ble remote binary single press {}".format(self._device_name)
+        self._unique_id = "rb_single_press_" + self._device_name
+
+
+class RemoteLongPressBinarySensor(SwitchingSensor):
+    """Representation of a Remote (long press) Binary Sensor."""
+
+    def __init__(self, config, mac, devtype, firmware):
+        """Initialize the sensor."""
+        super().__init__(config, mac, devtype, firmware)
+        self._measurement = "remote long press"
+        self._name = "ble remote binary long press {}".format(self._device_name)
+        self._unique_id = "rb_long_press_" + self._device_name
+
+
 class PowerBinarySensor(SwitchingSensor):
-    """Representation of a Sensor."""
+    """Representation of a Power Binary Sensor."""
 
     def __init__(self, config, mac, devtype, firmware):
         """Initialize the sensor."""
@@ -398,7 +414,7 @@ class PowerBinarySensor(SwitchingSensor):
 
 
 class LightBinarySensor(SwitchingSensor):
-    """Representation of a Sensor."""
+    """Representation of a Light Binary Sensor."""
 
     def __init__(self, config, mac, devtype, firmware):
         """Initialize the sensor."""
@@ -410,7 +426,7 @@ class LightBinarySensor(SwitchingSensor):
 
 
 class OpeningBinarySensor(SwitchingSensor):
-    """Representation of a Sensor."""
+    """Representation of a Opening Binary Sensor."""
 
     def __init__(self, config, mac, devtype, firmware):
         """Initialize the sensor."""
@@ -429,7 +445,7 @@ class OpeningBinarySensor(SwitchingSensor):
 
 
 class MoistureBinarySensor(SwitchingSensor):
-    """Representation of a Sensor."""
+    """Representation of a Moisture Binary Sensor."""
 
     def __init__(self, config, mac, devtype, firmware):
         """Initialize the sensor."""
@@ -441,7 +457,7 @@ class MoistureBinarySensor(SwitchingSensor):
 
 
 class MotionBinarySensor(SwitchingSensor):
-    """Representation of a Sensor."""
+    """Representation of a Motion Binary Sensor."""
 
     def __init__(self, config, mac, devtype, firmware):
         """Initialize the sensor."""
@@ -478,3 +494,32 @@ class MotionBinarySensor(SwitchingSensor):
                 self._state = self._newstate
         else:
             self._state = self._newstate
+
+
+class WeightRemovedBinarySensor(SwitchingSensor):
+    """Representation of a Weight Removed Binary Sensor."""
+
+    def __init__(self, config, mac, devtype, firmware):
+        """Initialize the sensor."""
+        super().__init__(config, mac, devtype, firmware)
+        self._measurement = "weight removed"
+        self._name = "ble weight removed {}".format(self._device_name)
+        self._unique_id = "wr_" + self._device_name
+        self._device_class = None
+
+    @property
+    def icon(self):
+        """Return the icon of the sensor."""
+        return "mdi:weight"
+
+
+class SmokeDetectorBinarySensor(SwitchingSensor):
+    """Representation of a Smoke Detector Binary Sensor."""
+
+    def __init__(self, config, mac, devtype, firmware):
+        """Initialize the sensor."""
+        super().__init__(config, mac, devtype, firmware)
+        self._measurement = "smoke detector"
+        self._name = "ble smoke detector {}".format(self._device_name)
+        self._unique_id = "sd_" + self._device_name
+        self._device_class = DEVICE_CLASS_SMOKE

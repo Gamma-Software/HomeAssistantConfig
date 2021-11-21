@@ -18,3 +18,13 @@ input_number:
     max: 20
     step: 1
     icon: "mdi:update"
+  home_current_brightness:
+    name: "home_current_brightness"
+    min: 0
+    max: 250
+    step: 1
+  home_current_temp:
+    name: "home_current_temp"
+    min: 0
+    max: 250
+    step: 1

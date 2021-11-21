@@ -7,7 +7,7 @@ from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from . import DOMAIN
-from .core import gateway3
+from .core import utils
 from .core.gateway3 import TELNET_CMD
 from .core.xiaomi_cloud import MiCloud
 
@@ -36,7 +36,9 @@ OPT_PARENT = {
     -1: "Disabled", 0: "Manually", 60: "Hourly"
 }
 OPT_MODE = {
-    False: "Mi Home", True: "Zigbee Home Automation (ZHA)"
+    False: "Mi Home",
+    True: "Zigbee Home Automation (ZHA)",
+    'z2m': "zigbee2mqtt"
 }
 
 
@@ -105,7 +107,7 @@ class XiaomiGateway3FlowHandler(ConfigFlow, domain=DOMAIN):
     async def async_step_token(self, user_input=None, error=None):
         """GUI > Configuration > Integrations > Plus > Xiaomi Gateway 3"""
         if user_input is not None:
-            error = gateway3.is_gw3(user_input['host'], user_input['token'])
+            error = utils.check_mgl03(**user_input)
             if error:
                 return await self.async_step_token(error=error)
 
@@ -128,6 +130,25 @@ class XiaomiGateway3FlowHandler(ConfigFlow, domain=DOMAIN):
         return OptionsFlowHandler(entry)
 
 
+TITLE = "Xiaomi Gateway 3"
+
+ZHA_NOTIFICATION = """Please create manually
+
+Integration: **Zigbee Home Automation**
+Radio Type: **EZSP**
+Path: `socket://%s:8888`
+Speed: `115200`"""
+
+Z2M_NOTIFICATION = """Add to your zigbee2mqtt config
+
+```
+serial:
+  port: 'tcp://%s:8888'
+  adapter: ezsp
+```
+"""
+
+
 class OptionsFlowHandler(OptionsFlow):
     def __init__(self, entry: ConfigEntry):
         self.entry = entry
@@ -143,28 +164,51 @@ class OptionsFlowHandler(OptionsFlow):
             did = user_input['did']
             device = next(d for d in self.hass.data[DOMAIN]['devices']
                           if d['did'] == did)
-            device_info = (
-                f"Name: {device['name']}\n"
-                f"Model: {device['model']}\n"
-                f"IP: {device['localip']}\n"
-                f"MAC: {device['mac']}\n"
-                f"Token: {device['token']}"
-            )
+
+            if device['pid'] != '6':
+                device_info = (
+                    f"Name: {device['name']}\n"
+                    f"Model: {device['model']}\n"
+                    f"IP: {device['localip']}\n"
+                    f"MAC: {device['mac']}\n"
+                    f"Token: {device['token']}"
+                )
+            else:
+                bindkey = await utils.get_bindkey(
+                    self.hass.data[DOMAIN]['cloud'], did
+                )
+                device_info = (
+                    f"Name: {device['name']}\n"
+                    f"Model: {device['model']}\n"
+                    f"MAC: {device['mac']}\n"
+                    f"Bindkey: {bindkey}\n"
+                )
+
             if device['model'] == 'lumi.gateway.v3':
-                device_info += "\nLAN key: " + gateway3.get_lan_key(device)
+                device_info += "\nLAN key: " + utils.get_lan_key(
+                    device['localip'], device['token']
+                )
+            elif '.vacuum.' in device['model']:
+                device_info += "\nRooms: " + await utils.get_room_mapping(
+                    self.hass.data[DOMAIN]['cloud'],
+                    device['localip'], device['token'],
+                )
 
         elif not self.hass.data[DOMAIN].get('devices'):
             device_info = "No devices in account"
         else:
-            # noinspection SqlResolve
-            device_info = "SELECT device FROM list"
+            device_info = "Choose a device from the list"
 
-        devices = {
-            device['did']: f"{device['name']} ({device['localip']})"
-            for device in self.hass.data[DOMAIN].get('devices', [])
-            # 0 - wifi, 8 - wifi+ble
-            if device['pid'] in ('0', '8')
-        }
+        devices = {}
+        for device in self.hass.data[DOMAIN].get('devices', []):
+            # 0 - wifi, 6 - ble, 8 - wifi+ble
+            if device['pid'] in ('0', '8'):
+                info = device['localip']
+            elif device['pid'] == '6':
+                info = 'BLE'
+            else:
+                continue
+            devices[device['did']] = f"{device['name']} ({info})"
 
         return self.async_show_form(
             step_id="cloud",
@@ -178,6 +222,28 @@ class OptionsFlowHandler(OptionsFlow):
 
     async def async_step_user(self, user_input=None):
         if user_input:
+            old_mode = self.entry.options.get('zha', False)
+            new_mode = user_input['zha']
+            if new_mode != old_mode:
+                host = user_input['host']
+
+                # change zigbee firmware if needed
+                if new_mode in (False, 'z2m'):
+                    ezsp_version = 8 if new_mode else 7
+                    if not await utils.update_zigbee_firmware(
+                            self.hass, host, ezsp_version
+                    ):
+                        raise Exception("Can't update zigbee firmware")
+
+                if new_mode is True:
+                    self.hass.components.persistent_notification.async_create(
+                        ZHA_NOTIFICATION % host, TITLE
+                    )
+                elif new_mode == 'z2m':
+                    self.hass.components.persistent_notification.async_create(
+                        Z2M_NOTIFICATION % host, TITLE
+                    )
+
             return self.async_create_entry(title='', data=user_input)
 
         host = self.entry.options['host']

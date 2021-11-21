@@ -7,7 +7,7 @@ trigger:
   from: "off"
   to: "on"
 action:
-- service: script.synchronize_home_lights
+  - service: script.synchronize_home_lights
     data:
       entities: >
         {{ trigger.entity_id }}
