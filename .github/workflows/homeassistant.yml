@@ -12,11 +12,18 @@ jobs:
   yamllint:
     name: 🧹 yamllint
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folders: [integration, entities, customizations, automations, scripts]
     steps:
       - name: ⤵️ Check out configuration from GitHub
         uses: actions/checkout@v2.4.0
-      - name: 🚀 Run yamllint
+      - name: 🚀 Run yamllint on ${{matrix.folders}}
         uses: frenck/action-yamllint@v1.1.1
+        with:
+          path: ${{matrix.folders}}/.
+          strict: false
+          warnings: true
 
   remarklint:
     runs-on: ubuntu-18.04

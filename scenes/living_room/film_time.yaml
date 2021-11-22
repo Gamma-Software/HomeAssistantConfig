@@ -1,6 +1,6 @@
 ---
-# Scene for the entire house to be dimmed down at the minimum for the eyes not to be bothered
-#
+# Scene for the entire house to be dimmed down at the minimum for the eyes not
+# to be bothered
 name: Film time
 entities:
   light.yeelight_ceiling_living_room: "off"

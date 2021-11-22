@@ -3,7 +3,8 @@
 # Creator: Juan - @juanmtech
 # Website: https://www.juanmtech.com
 # YouTube Channel: https://youtube.com/juanmtech
-# My Home Assistant Config files: https://github.com/JuanMTech/Home_Assistant_files
+# My Home Assistant Config files:
+# https://github.com/JuanMTech/Home_Assistant_files
 #
 #
 Google Dark Theme:
@@ -63,7 +64,8 @@ Google Dark Theme:
   # Toggles
   paper-toggle-button-checked-button-color: var(--switch-checked-button-color)
   paper-toggle-button-checked-bar-color: var(--switch-checked-track-color)
-  paper-toggle-button-unchecked-button-color: var(--switch-unchecked-button-color)
+  paper-toggle-button-unchecked-button-color: >
+    var(--switch-unchecked-button-color)
   paper-toggle-button-unchecked-bar-color: var(--switch-unchecked-track-color)
   # Table
   table-row-background-color: var(--primary-background-color)
