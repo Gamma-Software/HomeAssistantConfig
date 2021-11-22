@@ -21,7 +21,7 @@ jobs:
       - name: 🚀 Run yamllint on ${{matrix.folders}}
         uses: frenck/action-yamllint@v1.1.1
         with:
-          config: ".github/workflows/.yamllint_conf"
+          config: ".yamllint.yaml"
           path: ${{matrix.folders}}
           strict: false
           warnings: true

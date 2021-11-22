@@ -5,8 +5,6 @@ custom_components/circadian_lighting/.idea/**
 image
 image/**
 
-!.github/workflows/.yamllint_conf
-
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
 !.gitignore
