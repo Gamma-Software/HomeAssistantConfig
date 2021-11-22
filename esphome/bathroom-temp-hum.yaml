@@ -1,3 +1,4 @@
+---
 esphome:
   name: bathroom-temp-hum
   platform: ESP8266

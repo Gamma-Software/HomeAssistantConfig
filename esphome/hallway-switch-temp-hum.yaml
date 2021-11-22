@@ -1,3 +1,4 @@
+---
 esphome:
   name: hallway-switch-temp-hum
   platform: ESP8266

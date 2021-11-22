@@ -1,5 +1,5 @@
 ---
-alias: 'Turn lights off when  tv on after sun down'
+alias: "Turn lights off when  tv on after sun down"
 mode: queued
 description: >-
   Controls the living room light play when tv is off

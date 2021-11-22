@@ -3,4 +3,4 @@ platform: mqtt
 name: "Bathroom temperature"
 state_topic: "home/bathroom/temperature"
 unit_of_measurement: "°C"
-expire_after: 120 #After 2 min
+expire_after: 120 # After 2 min

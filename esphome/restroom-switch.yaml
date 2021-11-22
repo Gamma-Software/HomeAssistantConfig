@@ -1,3 +1,4 @@
+---
 esphome:
   name: restroom-switch
   platform: ESP8266

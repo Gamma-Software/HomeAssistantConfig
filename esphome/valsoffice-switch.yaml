@@ -1,3 +1,4 @@
+---
 esphome:
   name: valsoffice-switch
   platform: ESP8266

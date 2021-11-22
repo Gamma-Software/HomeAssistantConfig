@@ -1,10 +1,10 @@
 ---
-alias: 'Switch kitchen ceiling on'
+alias: "Switch kitchen ceiling on"
 mode: queued
 trigger:
   platform: state
   entity_id: switch.kitchen_switch_basic_relay_2
-  to: 'on'
+  to: "on"
 action:
   - service: light.turn_on
     entity_id: light.kitchen_light_template

@@ -1,10 +1,10 @@
 ---
-alias: 'Switch all lights off on'
+alias: "Switch all lights off on"
 mode: queued
 trigger:
   - platform: state
     entity_id: sensor.control_home_switch
-    to: '1_hold'
+    to: "1_hold"
 action:
   - service: light.turn_on
     entity_id: all

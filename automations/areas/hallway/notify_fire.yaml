@@ -1,10 +1,10 @@
 ---
-alias: 'Notify fire'
+alias: "Notify fire"
 mode: parallel
 trigger:
   platform: state
   entity_id: binary_sensor.smoke_sensor
-  to: 'on'
+  to: "on"
 action:
   - service: notify.mobile_app_mi_a3
     data:

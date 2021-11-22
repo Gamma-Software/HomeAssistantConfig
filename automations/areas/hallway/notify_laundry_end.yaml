@@ -1,10 +1,10 @@
 ---
-alias: 'Notify laundry end'
+alias: "Notify laundry end"
 mode: parallel
 trigger:
   platform: state
   entity_id: sensor.machine_a_laver_le_linge_state
-  to: 'False'
+  to: "False"
   for:
     minutes: 20
 action:
@@ -16,5 +16,5 @@ action:
     data:
       message: Priscillia la machine a laver le linge est terminee
       title: Lave linge terminee
-  - service : light.turn_on
+  - service: light.turn_on
     entity_id: light.yeelight_stripe_buandrie

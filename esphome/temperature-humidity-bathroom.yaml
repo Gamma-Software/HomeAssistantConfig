@@ -1,3 +1,4 @@
+---
 esphome:
   name: temperature-humidity-bathroom
   platform: ESP8266

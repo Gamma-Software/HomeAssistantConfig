@@ -1,10 +1,10 @@
 ---
-alias: 'Notify washmachine end'
+alias: "Notify washmachine end"
 mode: parallel
 trigger:
   platform: state
   entity_id: sensor.machine_a_laver_la_vaisselle_on
-  to: 'False'
+  to: "False"
   for:
     minutes: 3
 action:

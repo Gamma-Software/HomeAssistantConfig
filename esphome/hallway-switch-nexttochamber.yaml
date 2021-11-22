@@ -1,3 +1,4 @@
+---
 esphome:
   name: hallway-switch-nexttochamber
   platform: ESP8266
@@ -57,7 +58,7 @@ status_led:
   pin:
     number: GPIO13
     inverted: yes
-    
+
 sensor:
   - platform: wifi_signal
     name: "Hallway Switch NextToBathroom WiFi Signal Strength"

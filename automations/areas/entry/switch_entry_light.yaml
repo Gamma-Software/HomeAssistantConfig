@@ -1,11 +1,11 @@
 ---
-alias: 'Switch entry light'
+alias: "Switch entry light"
 mode: queued
 description: Switch entry light
 trigger:
   platform: state
   entity_id: sensor.control_home_switch
-  to: '1_click'
+  to: "1_click"
 action:
   - service: light.toggle
-    entity_id: light.entry_lights
+    entity_id: light.entry_light

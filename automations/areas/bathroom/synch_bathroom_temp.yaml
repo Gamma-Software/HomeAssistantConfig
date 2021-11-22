@@ -1,5 +1,5 @@
 ---
-alias: 'Synchronize bathroom light temp'
+alias: "Synchronize bathroom light temp"
 mode: queued
 trigger:
   platform: event
@@ -14,10 +14,10 @@ condition:
          or trigger.event.data.new_state.attributes.color_temp != trigger.event.data.old_state.attributes.color_temp)}}
   - condition: state
     entity_id: light.hue_adore_spot_1
-    state: 'on'
+    state: "on"
 action:
   - service: light.turn_on
     data_template:
       entity_id: light.bathroom_lights
-      brightness: '{{ trigger.event.data.new_state.attributes.brightness }}'
-      color_temp: '{{ trigger.event.data.new_state.attributes.color_temp }}'
+      brightness: "{{ trigger.event.data.new_state.attributes.brightness }}"
+      color_temp: "{{ trigger.event.data.new_state.attributes.color_temp }}"

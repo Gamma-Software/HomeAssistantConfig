@@ -14,5 +14,3 @@ action:
           {% endif %}
         {% endfor %}
       level: error
-        
-  
