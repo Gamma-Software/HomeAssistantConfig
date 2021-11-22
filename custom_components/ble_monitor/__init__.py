@@ -1,12 +1,13 @@
 """Passive BLE monitor integration."""
-import aioblescan as aiobs
 import asyncio
 import copy
-import janus
 import json
 import logging
 from threading import Thread
 import voluptuous as vol
+
+import aioblescan as aiobs
+import janus
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import (
@@ -24,46 +25,60 @@ from homeassistant.helpers.entity_registry import (
     async_entries_for_device,
 )
 
-from .ble_parser import ble_parser, hci_get_mac
+from .ble_parser import BleParser
 from .const import (
-    DEFAULT_ROUNDING,
-    DEFAULT_DECIMALS,
-    DEFAULT_PERIOD,
-    DEFAULT_LOG_SPIKES,
-    DEFAULT_USE_MEDIAN,
-    DEFAULT_ACTIVE_SCAN,
-    DEFAULT_BATT_ENTITIES,
-    DEFAULT_REPORT_UNKNOWN,
-    DEFAULT_DISCOVERY,
-    DEFAULT_RESTORE_STATE,
-    DEFAULT_DEVICE_DECIMALS,
-    DEFAULT_DEVICE_USE_MEDIAN,
-    DEFAULT_DEVICE_RESTORE_STATE,
-    DEFAULT_DEVICE_RESET_TIMER,
-    CONF_ROUNDING,
-    CONF_DECIMALS,
-    CONF_PERIOD,
-    CONF_LOG_SPIKES,
-    CONF_USE_MEDIAN,
+    AES128KEY24_REGEX,
+    AES128KEY32_REGEX,
     CONF_ACTIVE_SCAN,
-    CONF_HCI_INTERFACE,
-    CONF_BT_INTERFACE,
     CONF_BATT_ENTITIES,
-    CONF_REPORT_UNKNOWN,
-    CONF_RESTORE_STATE,
-    CONF_ENCRYPTION_KEY,
+    CONF_BT_AUTO_RESTART,
+    CONF_BT_INTERFACE,
+    CONF_DECIMALS,
     CONF_DEVICE_DECIMALS,
+    CONF_DEVICE_ENCRYPTION_KEY,
     CONF_DEVICE_USE_MEDIAN,
     CONF_DEVICE_RESTORE_STATE,
     CONF_DEVICE_RESET_TIMER,
+    CONF_DEVICE_TRACK,
+    CONF_DEVICE_TRACKER_SCAN_INTERVAL,
+    CONF_DEVICE_TRACKER_CONSIDER_HOME,
+    CONF_HCI_INTERFACE,
+    CONF_PERIOD,
+    CONF_LOG_SPIKES,
+    CONF_REPORT_UNKNOWN,
+    CONF_RESTORE_STATE,
+    CONF_USE_MEDIAN,
     CONFIG_IS_FLOW,
+    DEFAULT_ACTIVE_SCAN,
+    DEFAULT_BATT_ENTITIES,
+    DEFAULT_BT_AUTO_RESTART,
+    DEFAULT_DECIMALS,
+    DEFAULT_DEVICE_DECIMALS,
+    DEFAULT_DEVICE_RESTORE_STATE,
+    DEFAULT_DEVICE_RESET_TIMER,
+    DEFAULT_DEVICE_TRACK,
+    DEFAULT_DEVICE_TRACKER_SCAN_INTERVAL,
+    DEFAULT_DEVICE_TRACKER_CONSIDER_HOME,
+    DEFAULT_DEVICE_USE_MEDIAN,
+    DEFAULT_DISCOVERY,
+    DEFAULT_LOG_SPIKES,
+    DEFAULT_PERIOD,
+    DEFAULT_REPORT_UNKNOWN,
+    DEFAULT_RESTORE_STATE,
+    DEFAULT_USE_MEDIAN,
     DOMAIN,
     PLATFORMS,
     MAC_REGEX,
-    AES128KEY24_REGEX,
-    AES128KEY32_REGEX,
     MEASUREMENT_DICT,
+    REPORT_UNKNOWN_LIST,
     SERVICE_CLEANUP_ENTRIES,
+)
+
+from .bt_helpers import (
+    BT_INTERFACES,
+    BT_MULTI_SELECT,
+    DEFAULT_BT_INTERFACE,
+    reset_bluetooth
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -71,38 +86,34 @@ _LOGGER = logging.getLogger(__name__)
 CONFIG_YAML = {}
 UPDATE_UNLISTENER = None
 
-try:
-    BT_INTERFACES = hci_get_mac([0, 1, 2, 3])
-    BT_HCI_INTERFACES = list(BT_INTERFACES.keys())
-    BT_MAC_INTERFACES = list(BT_INTERFACES.values())
-    DEFAULT_BT_INTERFACE = list(BT_INTERFACES.items())[0][1]
-    DEFAULT_HCI_INTERFACE = list(BT_INTERFACES.items())[0][0]
-except IndexError:
-    DEFAULT_BT_INTERFACE = '00:00:00:00:00:00'
-    DEFAULT_HCI_INTERFACE = 0
-    BT_HCI_INTERFACES = [0]
-    BT_MAC_INTERFACES = ['00:00:00:00:00:00']
-    _LOGGER.warning("No Bluetooth interface found. Make sure Bluetooth is installed on your system")
-
 DEVICE_SCHEMA = vol.Schema(
     {
         vol.Optional(CONF_MAC): cv.matches_regex(MAC_REGEX),
         vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_ENCRYPTION_KEY): vol.Any(
+        vol.Optional(CONF_DEVICE_ENCRYPTION_KEY): vol.Any(
             cv.matches_regex(AES128KEY24_REGEX), cv.matches_regex(AES128KEY32_REGEX)
         ),
         vol.Optional(CONF_TEMPERATURE_UNIT): cv.temperature_unit,
-        vol.Optional(
-            CONF_DEVICE_DECIMALS, default=DEFAULT_DEVICE_DECIMALS
-        ): vol.In([DEFAULT_DEVICE_DECIMALS, 0, 1, 2, 3, 4]),
-        vol.Optional(
-            CONF_DEVICE_USE_MEDIAN, default=DEFAULT_DEVICE_USE_MEDIAN
-        ): vol.In([DEFAULT_DEVICE_USE_MEDIAN, True, False]),
+        vol.Optional(CONF_DEVICE_DECIMALS, default=DEFAULT_DEVICE_DECIMALS): vol.In(
+            [DEFAULT_DEVICE_DECIMALS, 0, 1, 2, 3, 4]
+        ),
+        vol.Optional(CONF_DEVICE_USE_MEDIAN, default=DEFAULT_DEVICE_USE_MEDIAN): vol.In(
+            [DEFAULT_DEVICE_USE_MEDIAN, True, False]
+        ),
         vol.Optional(
             CONF_DEVICE_RESTORE_STATE, default=DEFAULT_DEVICE_RESTORE_STATE
         ): vol.In([DEFAULT_DEVICE_RESTORE_STATE, True, False]),
         vol.Optional(
             CONF_DEVICE_RESET_TIMER, default=DEFAULT_DEVICE_RESET_TIMER
+        ): cv.positive_int,
+        vol.Optional(CONF_DEVICE_TRACK, default=DEFAULT_DEVICE_TRACK): cv.boolean,
+        vol.Optional(
+            CONF_DEVICE_TRACKER_SCAN_INTERVAL,
+            default=DEFAULT_DEVICE_TRACKER_SCAN_INTERVAL,
+        ): cv.positive_int,
+        vol.Optional(
+            CONF_DEVICE_TRACKER_CONSIDER_HOME,
+            default=DEFAULT_DEVICE_TRACKER_CONSIDER_HOME,
         ): cv.positive_int,
     }
 )
@@ -110,19 +121,25 @@ DEVICE_SCHEMA = vol.Schema(
 CONFIG_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.All(
-            cv.deprecated(CONF_ROUNDING),
             cv.deprecated(CONF_BATT_ENTITIES),
             vol.Schema(
                 {
-                    vol.Optional(CONF_ROUNDING, default=DEFAULT_ROUNDING): cv.positive_int,
-                    vol.Optional(CONF_DECIMALS, default=DEFAULT_DECIMALS): cv.positive_int,
-                    vol.Optional(CONF_PERIOD, default=DEFAULT_PERIOD): cv.positive_int,
-                    vol.Optional(CONF_LOG_SPIKES, default=DEFAULT_LOG_SPIKES): cv.boolean,
-                    vol.Optional(CONF_USE_MEDIAN, default=DEFAULT_USE_MEDIAN): cv.boolean,
-                    vol.Optional(CONF_ACTIVE_SCAN, default=DEFAULT_ACTIVE_SCAN): cv.boolean,
                     vol.Optional(
-                        CONF_HCI_INTERFACE, default=[]
-                    ): vol.All(cv.ensure_list, [cv.positive_int]),
+                        CONF_DECIMALS, default=DEFAULT_DECIMALS
+                    ): cv.positive_int,
+                    vol.Optional(CONF_PERIOD, default=DEFAULT_PERIOD): cv.positive_int,
+                    vol.Optional(
+                        CONF_LOG_SPIKES, default=DEFAULT_LOG_SPIKES
+                    ): cv.boolean,
+                    vol.Optional(
+                        CONF_USE_MEDIAN, default=DEFAULT_USE_MEDIAN
+                    ): cv.boolean,
+                    vol.Optional(
+                        CONF_ACTIVE_SCAN, default=DEFAULT_ACTIVE_SCAN
+                    ): cv.boolean,
+                    vol.Optional(CONF_HCI_INTERFACE, default=[]): vol.All(
+                        cv.ensure_list, [cv.positive_int]
+                    ),
                     vol.Optional(
                         CONF_BT_INTERFACE, default=DEFAULT_BT_INTERFACE
                     ): vol.All(cv.ensure_list, [cv.matches_regex(MAC_REGEX)]),
@@ -130,17 +147,20 @@ CONFIG_SCHEMA = vol.Schema(
                         CONF_BATT_ENTITIES, default=DEFAULT_BATT_ENTITIES
                     ): cv.boolean,
                     vol.Optional(CONF_DISCOVERY, default=DEFAULT_DISCOVERY): cv.boolean,
-                    vol.Optional(CONF_RESTORE_STATE, default=DEFAULT_RESTORE_STATE): cv.boolean,
+                    vol.Optional(
+                        CONF_RESTORE_STATE, default=DEFAULT_RESTORE_STATE
+                    ): cv.boolean,
                     vol.Optional(CONF_DEVICES, default=[]): vol.All(
                         cv.ensure_list, [DEVICE_SCHEMA]
                     ),
                     vol.Optional(
                         CONF_REPORT_UNKNOWN, default=DEFAULT_REPORT_UNKNOWN
-                    ): vol.In(
-                        ["Xiaomi", "Qingping", "ATC", "Mi Scale", "Kegtron", "Thermoplus", "Govee", "Other", False]
-                    ),
+                    ): vol.In(REPORT_UNKNOWN_LIST),
+                    vol.Optional(
+                        CONF_BT_AUTO_RESTART, default=DEFAULT_BT_AUTO_RESTART
+                    ): cv.boolean,
                 }
-            )
+            ),
         )
     },
     extra=vol.ALLOW_EXTRA,
@@ -198,7 +218,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         UPDATE_UNLISTENER()
 
     if not config_entry.unique_id:
-        hass.config_entries.async_update_entry(config_entry, unique_id=config_entry.title)
+        hass.config_entries.async_update_entry(
+            config_entry, unique_id=config_entry.title
+        )
 
     _LOGGER.debug("async_setup_entry: domain %s", CONFIG_YAML)
 
@@ -228,20 +250,26 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                 del config["ids_from_name"]
 
         if not config[CONF_BT_INTERFACE]:
-            default_hci = list(BT_INTERFACES.keys())[list(BT_INTERFACES.values()).index(DEFAULT_BT_INTERFACE)]
+            default_hci = list(BT_INTERFACES.keys())[
+                list(BT_INTERFACES.values()).index(DEFAULT_BT_INTERFACE)
+            ]
             hci_list.append(int(default_hci))
             bt_mac_list.append(str(DEFAULT_BT_INTERFACE))
         else:
             bt_interface_list = config[CONF_BT_INTERFACE]
             for bt_mac in bt_interface_list:
-                hci = list(BT_INTERFACES.keys())[list(BT_INTERFACES.values()).index(bt_mac)]
+                hci = list(BT_INTERFACES.keys())[
+                    list(BT_INTERFACES.values()).index(bt_mac)
+                ]
                 hci_list.append(int(hci))
                 bt_mac_list.append(str(bt_mac))
     else:
         # Configuration in YAML
         for key, value in CONFIG_YAML.items():
             config[key] = value
-        _LOGGER.info("Available Bluetooth interfaces for BLE monitor: %s", BT_MAC_INTERFACES)
+        _LOGGER.info(
+            "Available Bluetooth interfaces for BLE monitor: %s", list(BT_MULTI_SELECT.values())
+        )
 
         if config[CONF_HCI_INTERFACE]:
             # Configuration of BT interface with hci number
@@ -257,21 +285,30 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     _LOGGER.error("Bluetooth interface hci%i is not available", hci)
         else:
             # Configuration of BT interface with mac address
-            CONF_BT_INTERFACES = [x.upper() for x in CONFIG_YAML[CONF_BT_INTERFACE]]
-            for bt_mac in CONF_BT_INTERFACES:
+            conf_bt_interfaces = [x.upper() for x in CONFIG_YAML[CONF_BT_INTERFACE]]
+            for bt_mac in conf_bt_interfaces:
                 try:
-                    hci = list(BT_INTERFACES.keys())[list(BT_INTERFACES.values()).index(bt_mac)]
+                    hci = list(BT_INTERFACES.keys())[
+                        list(BT_INTERFACES.values()).index(bt_mac)
+                    ]
                     hci_list.append(int(hci))
                     bt_mac_list.append(str(bt_mac))
                 except ValueError:
-                    _LOGGER.error("Bluetooth interface with MAC address %s is not available", bt_mac)
+                    _LOGGER.error(
+                        "Bluetooth interface with MAC address %s is not available",
+                        bt_mac,
+                    )
 
     if not hci_list:
         # Fall back in case no hci interfaces are added
-        default_hci = list(BT_INTERFACES.keys())[list(BT_INTERFACES.values()).index(DEFAULT_BT_INTERFACE)]
+        default_hci = list(BT_INTERFACES.keys())[
+            list(BT_INTERFACES.values()).index(DEFAULT_BT_INTERFACE)
+        ]
         hci_list.append(int(default_hci))
         bt_mac_list.append(str(DEFAULT_BT_INTERFACE))
-        _LOGGER.warning("No configured Bluetooth interfaces was found, using default interface instead")
+        _LOGGER.warning(
+            "No configured Bluetooth interfaces was found, using default interface instead"
+        )
 
     config[CONF_HCI_INTERFACE] = hci_list
     config[CONF_BT_INTERFACE] = bt_mac_list
@@ -321,26 +358,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_migrate_entry(hass, config_entry):
     """Migrate config entry to new version."""
-    if config_entry.version == 1:
+    if config_entry.version == 2:
         options = dict(config_entry.options)
-        hci_list = options.get(CONF_HCI_INTERFACE)
-        bt_mac_list = []
-        for hci in hci_list:
-            try:
-                bt_mac = BT_INTERFACES.get(hci)
-                if bt_mac:
-                    bt_mac_list.append(str(bt_mac))
-                else:
-                    _LOGGER.error("hci%i is not migrated, check the BLE monitor options", hci)
-            except ValueError:
-                _LOGGER.error("hci%i is not migrated, check the BLE monitor options", hci)
-        if not bt_mac_list:
-            # Fall back in case no hci interfaces are added
-            bt_mac_list.append(str(DEFAULT_BT_INTERFACE))
-            _LOGGER.warning("Migration of hci interface to Bluetooth mac address failed, using default MAC address")
-        options[CONF_BT_INTERFACE] = bt_mac_list
+        options[CONF_REPORT_UNKNOWN] = "Off"
 
-        config_entry.version = 2
+        config_entry.version = 3
         hass.config_entries.async_update_entry(config_entry, options=options)
         _LOGGER.info("Migrated config entry to version %d", config_entry.version)
     return True
@@ -351,7 +373,7 @@ async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> Non
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-async def async_cleanup_entries_service(hass: HomeAssistant, data):
+async def async_cleanup_entries_service(hass: HomeAssistant, service_data):
     """Remove orphaned entries from device and entity registries."""
     _LOGGER.debug("async_cleanup_entries_service")
 
@@ -380,6 +402,7 @@ class BLEmonitor:
         self.dataqueue = {
             "binary": janus.Queue(),
             "measuring": janus.Queue(),
+            "tracker": janus.Queue(),
         }
         self.config = config
         self.dumpthread = None
@@ -402,6 +425,7 @@ class BLEmonitor:
         """Stop HCIdump thread(s)."""
         self.dataqueue["binary"].sync_q.put_nowait(None)
         self.dataqueue["measuring"].sync_q.put_nowait(None)
+        self.dataqueue["tracker"].sync_q.put_nowait(None)
         result = True
         if self.dumpthread is None:
             _LOGGER.debug("BLE monitor stopped")
@@ -429,77 +453,105 @@ class HCIdump(Thread):
 
     def __init__(self, config, dataqueue):
         """Initiate HCIdump thread."""
-
         Thread.__init__(self)
         _LOGGER.debug("HCIdump thread: Init")
         self.dataqueue_bin = dataqueue["binary"]
         self.dataqueue_meas = dataqueue["measuring"]
+        self.dataqueue_tracker = dataqueue["tracker"]
         self._event_loop = None
         self._joining = False
         self.evt_cnt = 0
-        self.lpacket_ids = {}
-        self.movements_list = {}
-        self.adv_priority = {}
         self.config = config
         self._interfaces = config[CONF_HCI_INTERFACE]
         self._active = int(config[CONF_ACTIVE_SCAN] is True)
         self.discovery = True
+        self.filter_duplicates = True
         self.aeskeys = {}
-        self.whitelist = []
+        self.sensor_whitelist = []
+        self.tracker_whitelist = []
         self.report_unknown = False
         if self.config[CONF_REPORT_UNKNOWN]:
             self.report_unknown = self.config[CONF_REPORT_UNKNOWN]
             _LOGGER.info(
-                "Attention! Option report_unknown is enabled for %s sensors, be ready for a huge output...",
-                self.report_unknown
+                "Attention! Option report_unknown is enabled for %s sensors, be ready for a huge output",
+                self.report_unknown,
             )
         # prepare device:key lists to speedup parser
         if self.config[CONF_DEVICES]:
             for device in self.config[CONF_DEVICES]:
-                if CONF_ENCRYPTION_KEY in device and device[CONF_ENCRYPTION_KEY]:
-                    p_mac = bytes.fromhex(
-                        device["mac"].replace(":", "").lower()
-                    )
-                    p_key = bytes.fromhex(device[CONF_ENCRYPTION_KEY].lower())
+                if CONF_DEVICE_ENCRYPTION_KEY in device and device[CONF_DEVICE_ENCRYPTION_KEY]:
+                    p_mac = bytes.fromhex(device["mac"].replace(":", "").lower())
+                    p_key = bytes.fromhex(device[CONF_DEVICE_ENCRYPTION_KEY].lower())
                     self.aeskeys[p_mac] = p_key
                 else:
                     continue
-        _LOGGER.debug("%s encryptors mac:key pairs loaded.", len(self.aeskeys))
+        _LOGGER.debug("%s encryptors mac:key pairs loaded", len(self.aeskeys))
 
-        if isinstance(self.config[CONF_DISCOVERY], bool) and self.config[CONF_DISCOVERY] is False:
+        # prepare sensor whitelist to speedup parser
+        if (
+            isinstance(self.config[CONF_DISCOVERY], bool) and self.config[CONF_DISCOVERY] is False
+        ):
             self.discovery = False
             if self.config[CONF_DEVICES]:
                 for device in self.config[CONF_DEVICES]:
-                    self.whitelist.append(device["mac"])
+                    self.sensor_whitelist.append(device["mac"])
 
-        # remove duplicates from whitelist
-        self.whitelist = list(dict.fromkeys(self.whitelist))
-        _LOGGER.debug("whitelist: [%s]", ", ".join(self.whitelist).upper())
-        for i, mac in enumerate(self.whitelist):
-            self.whitelist[i] = bytes.fromhex(mac.replace(":", "")).lower()
-        _LOGGER.debug("%s whitelist item(s) loaded.", len(self.whitelist))
+        # remove duplicates from sensor whitelist
+        self.sensor_whitelist = list(dict.fromkeys(self.sensor_whitelist))
+        _LOGGER.debug(
+            "sensor whitelist: [%s]", ", ".join(self.sensor_whitelist).upper()
+        )
+        for i, mac in enumerate(self.sensor_whitelist):
+            self.sensor_whitelist[i] = bytes.fromhex(mac.replace(":", ""))
+        _LOGGER.debug("%s sensor whitelist item(s) loaded", len(self.sensor_whitelist))
+
+        # prepare device tracker list to speedup parser
+        if self.config[CONF_DEVICES]:
+            for device in self.config[CONF_DEVICES]:
+                if CONF_DEVICE_TRACK in device and device[CONF_DEVICE_TRACK]:
+                    track_mac = bytes.fromhex(device["mac"].replace(":", ""))
+                    self.tracker_whitelist.append(track_mac)
+                else:
+                    continue
+        _LOGGER.debug(
+            "%s device tracker(s) being monitored", len(self.tracker_whitelist)
+        )
+
+        # prepare the ble_parser
+        self.ble_parser = BleParser(
+            report_unknown=self.report_unknown,
+            discovery=self.discovery,
+            filter_duplicates=self.filter_duplicates,
+            sensor_whitelist=self.sensor_whitelist,
+            tracker_whitelist=self.tracker_whitelist,
+            aeskeys=self.aeskeys,
+        )
 
     def process_hci_events(self, data):
         """Parse HCI events."""
         self.evt_cnt += 1
         if len(data) < 12:
             return
-        msg = ble_parser(self, data)
-        if msg:
-            measurements = list(msg.keys())
-            device_type = msg["type"]
-            sensor_list = MEASUREMENT_DICT[device_type][0] + MEASUREMENT_DICT[device_type][1]
-            binary_list = MEASUREMENT_DICT[device_type][2]
+        sensor_msg, tracker_msg = self.ble_parser.parse_data(data)
+        if sensor_msg:
+            measurements = list(sensor_msg.keys())
+            device_type = sensor_msg["type"]
+            sensor_list = (
+                MEASUREMENT_DICT[device_type][0] + MEASUREMENT_DICT[device_type][1]
+            )
+            binary_list = MEASUREMENT_DICT[device_type][2] + ["battery"]
             measuring = any(x in measurements for x in sensor_list)
             binary = any(x in measurements for x in binary_list)
             if binary == measuring:
-                self.dataqueue_bin.sync_q.put_nowait(msg)
-                self.dataqueue_meas.sync_q.put_nowait(msg)
+                self.dataqueue_bin.sync_q.put_nowait(sensor_msg)
+                self.dataqueue_meas.sync_q.put_nowait(sensor_msg)
             else:
                 if binary is True:
-                    self.dataqueue_bin.sync_q.put_nowait(msg)
+                    self.dataqueue_bin.sync_q.put_nowait(sensor_msg)
                 if measuring is True:
-                    self.dataqueue_meas.sync_q.put_nowait(msg)
+                    self.dataqueue_meas.sync_q.put_nowait(sensor_msg)
+        if tracker_msg:
+            self.dataqueue_tracker.sync_q.put_nowait(tracker_msg)
 
     def run(self):
         """Run HCIdump thread."""
@@ -518,18 +570,33 @@ class HCIdump(Thread):
                 except OSError as error:
                     _LOGGER.error("HCIdump thread: OS error (hci%i): %s", hci, error)
                 else:
-                    fac[hci] = getattr(self._event_loop, "_create_connection_transport")(
-                        mysocket[hci], aiobs.BLEScanRequester, None, None
+                    fac[hci] = getattr(
+                        self._event_loop, "_create_connection_transport"
+                    )(mysocket[hci], aiobs.BLEScanRequester, None, None)
+                    conn[hci], btctrl[hci] = self._event_loop.run_until_complete(
+                        fac[hci]
                     )
-                    conn[hci], btctrl[hci] = self._event_loop.run_until_complete(fac[hci])
                     _LOGGER.debug("HCIdump thread: connected to hci%i", hci)
                     btctrl[hci].process = self.process_hci_events
                     try:
-                        self._event_loop.run_until_complete(btctrl[hci].send_scan_request(self._active))
-                    except RuntimeError as error:
-                        _LOGGER.error(
-                            "HCIdump thread: Runtime error while sending scan request on hci%i: %s", hci, error
+                        self._event_loop.run_until_complete(
+                            btctrl[hci].send_scan_request(self._active)
                         )
+                    except RuntimeError as error:
+                        if CONF_BT_AUTO_RESTART:
+                            _LOGGER.error(
+                                "HCIdump thread: Runtime error while sending scan request on hci%i: %s. Resetting Bluetooth adapter %s and trying again.",
+                                hci,
+                                error,
+                                BT_INTERFACES[hci],
+                            )
+                            reset_bluetooth(hci)
+                        else:
+                            _LOGGER.error(
+                                "HCIdump thread: Runtime error while sending scan request on hci%i: %s.",
+                                hci,
+                                error,
+                            )
             _LOGGER.debug("HCIdump thread: start main event_loop")
             try:
                 self._event_loop.run_forever()
@@ -537,20 +604,41 @@ class HCIdump(Thread):
                 _LOGGER.debug("HCIdump thread: main event_loop stopped, finishing")
                 for hci in self._interfaces:
                     try:
-                        self._event_loop.run_until_complete(btctrl[hci].stop_scan_request())
+                        self._event_loop.run_until_complete(
+                            btctrl[hci].stop_scan_request()
+                        )
                     except RuntimeError as error:
-                        _LOGGER.error("HCIdump thread: Runtime error while stop scan request on hci%i: %s", hci, error)
+                        if CONF_BT_AUTO_RESTART:
+                            _LOGGER.error(
+                                "HCIdump thread: Runtime error while stop scan request on hci%i: %s Resetting Bluetooth adapter %s and trying again.",
+                                hci,
+                                error,
+                                BT_INTERFACES[hci],
+                            )
+                            reset_bluetooth(hci)
+                        else:
+                            _LOGGER.error(
+                                "HCIdump thread: Runtime error while stop scan request on hci%i: %s.",
+                                hci,
+                                error,
+                            )
                     except KeyError:
-                        _LOGGER.debug("HCIdump thread: Key error while stop scan request on hci%i", hci)
+                        _LOGGER.debug(
+                            "HCIdump thread: Key error while stop scan request on hci%i",
+                            hci,
+                        )
                     try:
                         conn[hci].close()
                     except KeyError:
-                        _LOGGER.debug("HCIdump thread: Key error while closing connection on hci%i", hci)
+                        _LOGGER.debug(
+                            "HCIdump thread: Key error while closing connection on hci%i",
+                            hci,
+                        )
                 self._event_loop.run_until_complete(asyncio.sleep(0))
             if self._joining is True:
                 break
             _LOGGER.debug("HCIdump thread: Scanning will be restarted")
-            _LOGGER.debug("%i HCI events processed for previous period.", self.evt_cnt)
+            _LOGGER.debug("%i HCI events processed for previous period", self.evt_cnt)
             self.evt_cnt = 0
         self._event_loop.close()
         _LOGGER.debug("HCIdump thread: Run finished")
