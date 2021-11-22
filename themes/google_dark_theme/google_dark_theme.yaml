@@ -1,3 +1,4 @@
+---
 # Theme based on Google app dark theme
 # Creator: Juan - @juanmtech
 # Website: https://www.juanmtech.com
@@ -6,10 +7,8 @@
 #
 #
 Google Dark Theme:
-  # Header:
   app-header-background-color: rgb(23, 23, 23)
   app-header-text-color: rgb(198, 203, 210)
-  # Main Interface Colors
   primary-color: rgb(138, 180, 248)
   light-primary-color: var(--primary-color)
   primary-background-color: rgb(23, 23, 23)

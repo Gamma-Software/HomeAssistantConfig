@@ -1,7 +1,7 @@
 ---
 alias: Shutdown home
 icon: "mdi:fire"
-description: 'Turn everything off in the house'
+description: "Turn everything off in the house"
 sequence:
   - service: light.turn_off
     entity_id: all

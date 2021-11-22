@@ -1,5 +1,5 @@
 ---
-alias: 'Chamber hue scene'
+alias: "Chamber hue scene"
 sequence:
   - service: hue.hue_activate_scene
     data:
