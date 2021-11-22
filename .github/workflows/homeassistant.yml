@@ -28,7 +28,7 @@ jobs:
         continue-on-error: true
         with:
           args: >
-            "remark --no-stdout --color --frail --use 
+            "remark --no-stdout --color --frail --use
             preset-lint-recommended ."
 
   home-assistant:
@@ -69,5 +69,5 @@ jobs:
       - name: Run esphome on all files
         # yamllint disable rule:line-length
         run: >
-          for file in $(find ./config/esphome -type f -name "*.yaml" -maxdepth 
+          for file in $(find ./config/esphome -type f -name "*.yaml" -maxdepth
           1 -not -name "secrets.yaml"); do esphome "${file}" config; done
