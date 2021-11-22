@@ -5,6 +5,8 @@ custom_components/circadian_lighting/.idea/**
 image
 image/**
 
+!.github/workflows/.yamllint_conf
+
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
 !.gitignore
@@ -51,7 +53,7 @@ custom_components/**/*.pyc
 
 # Ignore folders.
 .storage
-.cloud
+.cloudyamllint_configuration
 .google.token
 
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
