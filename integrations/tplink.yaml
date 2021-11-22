@@ -3,5 +3,5 @@ tplink:
   discovery: false
   switch:
     - host: 192.168.1.20
-    #- host: 192.168.1.32 broken tplink plug
+    # - host: 192.168.1.32 broken tplink plug
     - host: 192.168.1.47
