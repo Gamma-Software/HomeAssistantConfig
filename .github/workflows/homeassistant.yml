@@ -52,8 +52,8 @@ jobs:
       - name: 🚀 Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.1.1
         with:
-          path: "./config"
-          secrets: ./.stubs/secrets.yaml
+          path: "."
+          secrets: travis_secrets.yaml
           version: "${{ matrix.version }}"
 
   esphome:
@@ -73,9 +73,9 @@ jobs:
           pip list
           esphome version
       - name: Copy stub files into configuration folder
-        run: cp -R ./.stubs/* ./config/esphome/
+        run: cp -R travis_secrets.yaml ./esphome/
       - name: Run esphome on all files
         # yamllint disable rule:line-length
         run: >
-          for file in $(find ./config/esphome -type f -name "*.yaml" -maxdepth
+          for file in $(find ./esphome -type f -name "*.yaml" -maxdepth
           1 -not -name "secrets.yaml"); do esphome "${file}" config; done
