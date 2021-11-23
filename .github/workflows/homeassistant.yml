@@ -20,7 +20,7 @@ jobs:
       - name: 🚀 Run yamllint on configurations
         uses: frenck/action-yamllint@v1.1.1
         with:
-          config: ".yamllint.yaml"
+          config: "yamllint.yaml"
           path: .
           strict: false
           warnings: true

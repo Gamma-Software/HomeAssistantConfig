@@ -7,7 +7,6 @@ image/**
 
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
-!.gitignore
 !*.md
 !*.py
 !*.dash
