@@ -14,6 +14,7 @@ image/**
 !*.disable
 !.travis.yml
 !travis_secrets.yaml
+!.yamllint
 
 # This is the folder
 !integrations
