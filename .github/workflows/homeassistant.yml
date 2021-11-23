@@ -17,13 +17,9 @@ jobs:
         uses: actions/checkout@v2.4.0
       - name: List files
         run: ls -l
-      - name: 🚀 Run yamllint
-        run: |
-          yamllint .
       - name: 🚀 Run yamllint on configurations
         uses: frenck/action-yamllint@v1.1.1
         with:
-          config: "./custom/.yamllint"
           path: .
           strict: false
           warnings: true

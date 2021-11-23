@@ -9,14 +9,13 @@
 #
 
 platform: circadian_lighting
-name: 'circadian'
+name: "circadian"
 sleep_entity: switch.circadian_sleep_mode
-sleep_state: 'on'
+sleep_state: "on"
 sleep_brightness: 100
 min_brightness: 10
 lights_ct:
   - light.yeelight_ceiling_living_room
   - light.entry_light_template
-
 # Set the circadian scene to hue light https://developers.meethue.com/develop/get-started-2/
 # This is the token a46DHv8hEgUP2KT9dRTI6e7spcqX5dyErAdwqCRo
