@@ -12,12 +12,10 @@ image/**
 !*.dash
 !*.js
 !*.disable
-!.travis.yml
-!travis_secrets.yaml
 !.yamllint
 !.github/workflows/homeassistant.yml
-!extra
-!extra/**
+!.stub
+!.stub/**
 
 # This is the folder
 !integrations
