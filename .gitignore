@@ -16,6 +16,8 @@ image/**
 !travis_secrets.yaml
 !.yamllint
 !.github/workflows/homeassistant.yml
+!extra
+!extra/**
 
 # This is the folder
 !integrations
