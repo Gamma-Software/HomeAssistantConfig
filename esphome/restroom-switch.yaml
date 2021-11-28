@@ -58,7 +58,7 @@ status_led:
   pin:
     number: GPIO13
     inverted: yes
-    
+
 sensor:
   - platform: wifi_signal
     name: "Restroom Switch WiFi Signal Strength"

@@ -1,3 +1,4 @@
+---
 apply:
   description: Applies the current Adaptive Lighting settings to lights.
   fields:

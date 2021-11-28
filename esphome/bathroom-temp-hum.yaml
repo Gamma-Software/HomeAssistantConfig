@@ -24,7 +24,7 @@ api:
 
 ota:
   password: "Jslmdm0&"
-  
+
 sensor:
   - platform: dht
     pin: GPIO0

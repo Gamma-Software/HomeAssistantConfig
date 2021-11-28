@@ -9,6 +9,7 @@ ignore: |
   git
   custom_components
   .yamllint
+  .vscode
 
 rules:
   braces: enable
