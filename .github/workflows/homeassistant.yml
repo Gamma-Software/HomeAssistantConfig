@@ -57,7 +57,7 @@ jobs:
         uses: frenck/action-home-assistant@v1.1.1
         with:
           path: "."
-          secrets: .stub/secrets.yaml
+          secrets: .stubs/secrets.yaml
           version: "${{ matrix.version }}"
 
   esphome:
@@ -77,7 +77,7 @@ jobs:
           pip list
           esphome version
       - name: Copy stub files into configuration folder
-        run: cp -R .stub/secrets.yaml ./esphome/secrets.yaml
+        run: cp -R .stubs/secrets.yaml ./esphome/secrets.yaml
       - name: Run esphome on all files
         # yamllint disable rule:line-length
         run: >

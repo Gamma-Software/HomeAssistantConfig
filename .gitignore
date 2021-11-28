@@ -1,56 +1,14 @@
 # Example .gitignore file for your config dir.
-# An * ensures that everything will be ignored.
-*
-custom_components/circadian_lighting/.idea/**
-image
-image/**
 
 # You can whitelist files/folders with !, these will not be ignored.
-!*.yaml
-!*.md
-!*.py
-!*.dash
-!*.js
-!*.disable
-!.yamllint
-!.github/workflows/homeassistant.yml
-!.stub
-!.stub/**
 
-# This is the folder
-!integrations
-!integrations/**
-!lovelace
-!lovelace/**
-!custom_components
-!custom_components/**
 custom_components/**/*.pyc
-!appdaemon
-!appdaemon/**
-!automations
-!automations/**
-!blueprints
-!blueprints/**
-!customizations
-!customizations/**
-!deps
-!deps/**
-!entities
-!entities/**
-!esphome
-!esphome/**
-!scenes
-!scenes/**
-!scripts
-!scripts/**
-!themes
-!themes/**
-!tts
-!tts/**
-!www
-!www/**
 
 # Ignore folders.
+image
+home-assistant*
+.HA_VERSION
+.vscode
 .storage
 .cloudyamllint_configuration
 .google.token
@@ -59,3 +17,6 @@ custom_components/**/*.pyc
 ip_bans.yaml
 secrets.yaml
 known_devices.yaml
+
+# don't ignore secret in stubs
+!.stubs/secrets.yaml
