@@ -70,4 +70,3 @@ sensor:
   - platform: wifi_signal
     name: "Hallway Switch WiFi Signal Strength"
     update_interval: 60s
-

@@ -48,9 +48,9 @@ darkblue:
   # Toggles
   paper-toggle-button-checked-button-color: "#2F7EFD"
   paper-toggle-button-checked-bar-color: "#6FA6FE"
-  paper-toggle-button-unchecked-button-color: var(--paper-toggle-button-checked-button-color)
+  paper-toggle-button-unchecked-button-color: >
+    var(--paper-toggle-button-checked-button-color)
   paper-toggle-button-unchecked-bar-color: "#3E4756"
-
   # Table row
   table-row-background-color: var(--primary-background-color)
   table-row-alternative-background-color: var(--secondary-background-color)

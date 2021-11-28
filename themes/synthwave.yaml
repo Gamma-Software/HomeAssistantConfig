@@ -19,12 +19,14 @@ synthwave:
   card-background-color: "#34294f88"
   paper-card-background-color: "var(--card-background-color)"
   primary-background-color: "var(--primary-color)"
-  secondary-background-color: "var(--light-primary-color)" # behind the cards on state
+  secondary-background-color: "var(--light-primary-color)"
+  # behind the cards on state
   ha-card-border-radius: "0"
 
   # sidebar menu
   sidebar-text-color: "var(--secondary-text-color)"
-  # sidebar-background-color: 'var(--paper-listbox-background-color)' # backward compatible with existing themes
+  # sidebar-background-color: 'var(--paper-listbox-background-color)'
+  # backward compatible with existing themes
   sidebar-icon-color: "var(--secondary-text-color)"
   sidebar-selected-text-color: "var(--primary-text-color)"
   sidebar-selected-icon-color: "var(--primary-text-color)"
@@ -43,10 +45,12 @@ synthwave:
   toggle-button-color: "var(--primary-color)"
   # --toggle-button-unchecked-color: 'var(--accent-color)'
   paper-toggle-button-checked-button-color: "#FFF" # Knob On
-  paper-toggle-button-checked-bar-color: "var(--dark-primary-color)" # Background On
+  paper-toggle-button-checked-bar-color: "var(--dark-primary-color)"
+  # Background On
   switch-checked-color: "var(--dark-primary-color)" # Background On
   paper-toggle-button-unchecked-button-color: "#FFF" # Knob Off
-  paper-toggle-button-unchecked-bar-color: "var(--disabled-text-color)" # Background Off
+  paper-toggle-button-unchecked-bar-color: "var(--disabled-text-color)"
+  # Background Off
 
   # Sliders
   slider-color: "var(--primary-color)"
@@ -56,7 +60,8 @@ synthwave:
   paper-slider-knob-start-color: "var(--accent-color)"
   paper-slider-pin-color: "var(--accent-color)"
   paper-slider-active-color: "var(--dark-primary-color)"
-  # paper-slider-container-color: 'linear-gradient(var(--primary-background-color), var(--secondary-background-color)) no-repeat'
+  # paper-slider-container-color: 'linear-gradient(var(--primary-background-
+  # color), var(--secondary-background-color)) no-repeat'
   paper-slider-secondary-color: "var(--secondary-background-color)"
   paper-slider-disabled-active-color: "var(--disabled-text-color)"
   paper-slider-disabled-secondary-color: "var(--disabled-text-color)"

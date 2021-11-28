@@ -15,8 +15,14 @@ jobs:
     steps:
       - name: ⤵️ Check out configuration from GitHub
         uses: actions/checkout@v2.4.0
-      - name: 🚀 Run yamllint
+      - name: List files
+        run: ls -l
+      - name: 🚀 Run yamllint on configurations
         uses: frenck/action-yamllint@v1.1.1
+        with:
+          path: .
+          strict: false
+          warnings: true
 
   remarklint:
     runs-on: ubuntu-18.04
@@ -28,7 +34,7 @@ jobs:
         continue-on-error: true
         with:
           args: >
-            "remark --no-stdout --color --frail --use 
+            "remark --no-stdout --color --frail --use
             preset-lint-recommended ."
 
   home-assistant:
@@ -41,11 +47,17 @@ jobs:
     steps:
       - name: ⤵️ Check out configuration from GitHub
         uses: actions/checkout@v2.4.0
+      - name: Fake
+        run: >
+          sudo mkdir -p /ssl/ && sudo touch /ssl/fullchain.pem
+          & sudo mkdir -p /ssl/ && sudo touch /ssl/privkey.pem
+      - name: List files
+        run: ls -l
       - name: 🚀 Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.1.1
         with:
-          path: "./config"
-          secrets: ./.stubs/secrets.yaml
+          path: "."
+          secrets: .stubs/secrets.yaml
           version: "${{ matrix.version }}"
 
   esphome:
@@ -65,9 +77,9 @@ jobs:
           pip list
           esphome version
       - name: Copy stub files into configuration folder
-        run: cp -R ./.stubs/* ./config/esphome/
+        run: cp -R .stubs/secrets.yaml ./esphome/secrets.yaml
       - name: Run esphome on all files
         # yamllint disable rule:line-length
         run: >
-          for file in $(find ./config/esphome -type f -name "*.yaml" -maxdepth 
+          for file in $(find ./esphome -type f -name "*.yaml" -maxdepth
           1 -not -name "secrets.yaml"); do esphome "${file}" config; done

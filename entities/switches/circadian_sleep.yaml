@@ -10,14 +10,14 @@
 platform: template
 switches:
   circadian_sleep_mode:
-    unique_id: 'circadian_sleep_mode'
+    unique_id: "circadian_sleep_mode"
     turn_off:
       service: system_log.write
       data:
-        message: 'Circadian exits sleep mode'
+        message: "Circadian exits sleep mode"
         level: info
     turn_on:
       service: system_log.write
       data:
-        message: 'Circadian enters sleep mode'
+        message: "Circadian enters sleep mode"
         level: info
