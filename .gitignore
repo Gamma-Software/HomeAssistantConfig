@@ -7,7 +7,6 @@ custom_components/**/*.pyc
 # Ignore folders.
 image
 home-assistant*
-.HA_VERSION
 .vscode
 .storage
 .cloudyamllint_configuration
