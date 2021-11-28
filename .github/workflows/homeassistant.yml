@@ -51,7 +51,7 @@ jobs:
         run: ls -l
       - name: Fake
         run: >
-          sudo mkdir -p /ssl/ && sudo touch /ssl/fullchain.pem 
+          sudo mkdir -p /ssl/ && sudo touch /ssl/fullchain.pem
           & sudo mkdir -p /ssl/ && sudo touch /ssl/privkey.pem
       - name: 🚀 Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.1.1
