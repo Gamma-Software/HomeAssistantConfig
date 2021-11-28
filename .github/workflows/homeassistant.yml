@@ -53,13 +53,11 @@ jobs:
           & sudo mkdir -p /ssl/ && sudo touch /ssl/privkey.pem
       - name: List files
         run: ls -l
-      - name: List files in ssl
-        run: ls -l /ssl/*
       - name: 🚀 Run Home Assistant Configuration Check
         uses: frenck/action-home-assistant@v1.1.1
         with:
           path: "."
-          secrets: travis_secrets.yaml
+          secrets: .stub/secrets.yaml
           version: "${{ matrix.version }}"
 
   esphome:
@@ -79,7 +77,7 @@ jobs:
           pip list
           esphome version
       - name: Copy stub files into configuration folder
-        run: cp -R travis_secrets.yaml ./esphome/secrets.yaml
+        run: cp -R .stub/secrets.yaml ./esphome/secrets.yaml
       - name: Run esphome on all files
         # yamllint disable rule:line-length
         run: >
