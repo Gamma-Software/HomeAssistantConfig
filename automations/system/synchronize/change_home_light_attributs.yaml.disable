@@ -11,7 +11,7 @@ condition:
 action:
   - service: script.synchronize_home_lights
     data:
-      entities: [light.bathroom_lights, light.entry_lights, light.hallway_lights, light.kitchen_lights, light.yeelight_ceiling_living_room, light.hue_ambiance_spot_1, light.pila_s_office_lights, light.restroom_lights]
+      entities: [light.bathroom_lights, light.entry_lights, light.hallway_lights, light.kitchen_lights, light.yeelight_ceiling_living_room, light.hue_ambiance_spot_1, light.hue_color_spot_1, light.pila_s_office_lights, light.restroom_lights]
       brightness: >
         {{ trigger.event.data.new_state.attributes.brightness | float }}
       color_temp: >
