@@ -7,7 +7,7 @@ trigger:
 condition:
   condition: template
   value_template: >
-    {{ trigger.event.data.entity_id in ['light.bathroom_lights', 'light.entry_lights', 'light.hallway_lights', 'light.kitchen_lights', 'light.yeelight_ceiling_living_room', 'light.hue_ambiance_spot_1', 'light.pila_s_office_lights', 'light.restroom_lights']
+    {{ trigger.event.data.entity_id in ['light.bathroom_lights', 'light.entry_lights', 'light.hallway_lights', 'light.kitchen_lights', 'light.yeelight_ceiling_living_room', 'light.hue_ambiance_spot_1', 'light.hue_color_spot_1', 'light.pila_s_office_lights', 'light.restroom_lights']
     and ('brightness' in trigger.event.data.new_state.attributes and 'color_temp' in trigger.event.data.new_state.attributes)
     and ( trigger.event.data.new_state.attributes.brightness != trigger.event.data.old_state.attributes.brightness
        or trigger.event.data.new_state.attributes.color_temp != trigger.event.data.old_state.attributes.color_temp)}}
