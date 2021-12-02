@@ -17,4 +17,4 @@ action:
       message: Priscillia la machine a laver le linge est terminee
       title: Lave linge terminee
   - service: light.turn_on
-    entity_id: light.yeelight_stripe_buandrie
+    entity_id: light.yeelight_strip

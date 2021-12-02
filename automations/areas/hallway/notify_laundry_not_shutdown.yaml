@@ -15,5 +15,5 @@ condition:
 action:
   - service: light.turn_on
     data:
-      entity_id: light.yeelight_stripe_buandrie
+      entity_id: light.yeelight_strip
       color_name: red
