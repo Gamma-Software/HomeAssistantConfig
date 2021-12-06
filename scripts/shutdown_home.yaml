@@ -1,15 +1,10 @@
 ---
 alias: Shutdown home
-icon: "mdi:fire"
+icon: "mdi:power"
 description: "Turn everything off in the house"
 sequence:
   - service: light.turn_off
     entity_id: all
-  - service: media_player.media_stop
-    entity_id: media_player.google_home_mini
-  - service: media_player.media_stop
-    entity_id: media_player.maison_entiere
-  - service: media_player.media_stop
-    entity_id: media_player.salon
   - service: media_player.turn_off
-    entity_id: media_player.samsung_tv_remote
+    target:
+      entity_id: all
