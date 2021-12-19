@@ -2,6 +2,7 @@
 # Integration https://www.home-assistant.io/integrations/samsungtv/
 samsungtv:
   host: 192.168.1.8
+  name: "samsung_tv_led"
   turn_on_action:
     - service: wake_on_lan.send_magic_packet
       data:
