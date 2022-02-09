@@ -5,5 +5,16 @@
 # https://www.home-assistant.io/integrations/http/
 #
 http:
-  ssl_certificate: !secret ssl_certificate
-  ssl_key: !secret ssl_key
+  ip_ban_enabled: true
+  login_attempts_threshold: 5
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.1.0/24 # Local LAN Subnet
+    - 172.24.0.0/24 # Docker Subnet
+    - 192.168.1.34 # NPM host ip
+    - 172.24.0.5 # NPM local ip
+    - 127.0.0.1
+    - ::1
+    - fe80::/64
+    - fe00::/64
+    - fd00::/64
