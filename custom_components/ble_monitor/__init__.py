@@ -24,6 +24,7 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity_registry import (
     async_entries_for_device,
 )
+import homeassistant.util.dt as dt_util
 
 from .ble_parser import BleParser
 from .const import (
@@ -44,6 +45,7 @@ from .const import (
     CONF_DEVICE_TRACKER_CONSIDER_HOME,
     CONF_HCI_INTERFACE,
     CONF_PACKET,
+    CONF_GATEWAY_ID,
     CONF_PERIOD,
     CONF_LOG_SPIKES,
     CONF_REPORT_UNKNOWN,
@@ -172,6 +174,7 @@ SERVICE_CLEANUP_ENTRIES_SCHEMA = vol.Schema({})
 SERVICE_PARSE_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_PACKET): cv.string,
+        vol.Optional(CONF_GATEWAY_ID): cv.string
     }
 )
 
@@ -417,7 +420,10 @@ async def async_parse_data_service(hass: HomeAssistant, service_data):
     _LOGGER.debug("async_parse_data_service")
     blemonitor: BLEmonitor = hass.data[DOMAIN]["blemonitor"]
     if blemonitor:
-        blemonitor.dumpthread.process_hci_events(bytes.fromhex(service_data["packet"]))
+        blemonitor.dumpthread.process_hci_events(
+            bytes.fromhex(service_data["packet"]),
+            service_data[CONF_GATEWAY_ID] if CONF_GATEWAY_ID in service_data else DOMAIN
+        )
 
 
 class BLEmonitor:
@@ -496,6 +502,7 @@ class HCIdump(Thread):
         self.sensor_whitelist = []
         self.tracker_whitelist = []
         self.report_unknown = False
+        self.last_bt_reset = dt_util.now()
         if self.config[CONF_REPORT_UNKNOWN]:
             self.report_unknown = self.config[CONF_REPORT_UNKNOWN]
             _LOGGER.info(
@@ -553,7 +560,7 @@ class HCIdump(Thread):
             aeskeys=self.aeskeys,
         )
 
-    def process_hci_events(self, data):
+    def process_hci_events(self, data, gateway_id = DOMAIN):
         """Parse HCI events."""
         self.evt_cnt += 1
         if len(data) < 12:
@@ -577,6 +584,7 @@ class HCIdump(Thread):
                 if measuring is True:
                     self.dataqueue_meas.sync_q.put_nowait(sensor_msg)
         if tracker_msg:
+            tracker_msg[CONF_GATEWAY_ID] = gateway_id
             self.dataqueue_tracker.sync_q.put_nowait(tracker_msg)
 
     def run(self):
@@ -609,14 +617,17 @@ class HCIdump(Thread):
                             btctrl[hci].send_scan_request(self._active)
                         )
                     except RuntimeError as error:
-                        if CONF_BT_AUTO_RESTART:
-                            _LOGGER.error(
-                                "HCIdump thread: Runtime error while sending scan request on hci%i: %s. Resetting Bluetooth adapter %s and trying again.",
-                                hci,
-                                error,
-                                BT_INTERFACES[hci],
-                            )
-                            reset_bluetooth(hci)
+                        if self.config[CONF_BT_AUTO_RESTART] is True:
+                            ts_now = dt_util.now()
+                            if (ts_now - self.last_bt_reset).seconds > 60:
+                                _LOGGER.error(
+                                    "HCIdump thread: Runtime error while sending scan request on hci%i: %s. Resetting Bluetooth adapter %s and trying again.",
+                                    hci,
+                                    error,
+                                    BT_INTERFACES[hci],
+                                )
+                                reset_bluetooth(hci)
+                                self.last_bt_reset = ts_now
                         else:
                             _LOGGER.error(
                                 "HCIdump thread: Runtime error while sending scan request on hci%i: %s.",
@@ -634,14 +645,17 @@ class HCIdump(Thread):
                             btctrl[hci].stop_scan_request()
                         )
                     except RuntimeError as error:
-                        if CONF_BT_AUTO_RESTART:
-                            _LOGGER.error(
-                                "HCIdump thread: Runtime error while stop scan request on hci%i: %s Resetting Bluetooth adapter %s and trying again.",
-                                hci,
-                                error,
-                                BT_INTERFACES[hci],
-                            )
-                            reset_bluetooth(hci)
+                        if self.config[CONF_BT_AUTO_RESTART] is True:
+                            ts_now = dt_util.now()
+                            if (ts_now - self.last_bt_reset).seconds > 60:
+                                _LOGGER.error(
+                                    "HCIdump thread: Runtime error while stop scan request on hci%i: %s Resetting Bluetooth adapter %s and trying again.",
+                                    hci,
+                                    error,
+                                    BT_INTERFACES[hci],
+                                )
+                                reset_bluetooth(hci)
+                                self.last_bt_reset = ts_now
                         else:
                             _LOGGER.error(
                                 "HCIdump thread: Runtime error while stop scan request on hci%i: %s.",
