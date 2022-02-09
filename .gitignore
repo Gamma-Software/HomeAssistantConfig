@@ -19,3 +19,5 @@ known_devices.yaml
 
 # don't ignore secret in stubs
 !.stubs/secrets.yaml
+aircast.xml
+.gitignore
