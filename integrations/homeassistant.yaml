@@ -12,4 +12,4 @@ homeassistant:
   time_zone: "Europe/Paris"
   external_url: "https://homeassistant.pival.fr"
   internal_url: "https://homeassistant.internal.pival.fr"
-  customize: !include_dir_merge_named ../customizations/entities
+  customize: !include_dir_list ../customizations/entities
