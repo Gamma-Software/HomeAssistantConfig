@@ -5,13 +5,11 @@
 # main configuration.yaml.
 #
 homeassistant:
-  # Name of the location where Home Assistant is running
   name: "PiVal Homeassistant"
-  # Location required to calculate the time the sun rises and sets
   latitude: 49.0453086809979
   longitude: 2.013213663100481
-  # 'metric' for Metric, 'imperial' for Imperial
   unit_system: Metric
-  # Pick yours from here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: "Europe/Paris"
+  external_url: "https://homeassistant.pival.fr"
+  internal_url: "https://homeassistant.internal.pival.fr"
   customize: !include_dir_merge_named ../customizations/entities
