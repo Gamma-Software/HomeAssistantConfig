@@ -8,4 +8,22 @@
 #
 # Reasoning: Removes the need for me to juggle secrets.
 #
-zone: ~
+zone:
+  - name: Priscillia Work
+    latitude: 49.058654320856824
+    longitude: 2.1385574340820317
+    radius: 855
+    icon: mdi:account-location
+    
+  - name: Valentin Work
+    latitude: 48.89180956320587
+    longitude: 2.2425842285156254
+    radius: 1000
+    icon: mdi:account-location
+
+  # This will override the default home zone
+  - name: Home
+    latitude: 49.04556184474884
+    longitude: 2.0132565784427583
+    radius: 100
+    icon: mdi:account-multiple
