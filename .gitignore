@@ -21,3 +21,4 @@ known_devices.yaml
 !.stubs/secrets.yaml
 aircast.xml
 traccar.xml
+.HA_VERSION
