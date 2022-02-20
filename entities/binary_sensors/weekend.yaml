@@ -8,7 +8,7 @@
 #
 platform: workday
 name: weekend
-country: FRA
+country: FR
 workdays:
   - sat
   - sun

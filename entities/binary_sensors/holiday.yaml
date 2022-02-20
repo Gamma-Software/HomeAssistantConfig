@@ -8,7 +8,7 @@
 #
 platform: workday
 name: holiday
-country: FRA
+country: FR
 workdays:
   - holiday
 excludes: []
