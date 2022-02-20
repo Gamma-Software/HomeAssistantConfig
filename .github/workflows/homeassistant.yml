@@ -82,4 +82,4 @@ jobs:
         # yamllint disable rule:line-length
         run: >
           for file in $(find ./esphome -type f -name "*.yaml" -maxdepth
-          1 -not -name "secrets.yaml"); do esphome "${file}" config; done
+          1 -not -name "secrets.yaml"); do esphome config "${file}"; done
