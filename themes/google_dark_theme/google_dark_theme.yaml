@@ -1,15 +1,15 @@
----
 # Theme based on Google app dark theme
 # Creator: Juan - @juanmtech
 # Website: https://www.juanmtech.com
 # YouTube Channel: https://youtube.com/juanmtech
-# My Home Assistant Config files:
-# https://github.com/JuanMTech/Home_Assistant_files
+# My Home Assistant Config files: https://github.com/JuanMTech/Home_Assistant_files
 #
 #
 Google Dark Theme:
+  # Header:
   app-header-background-color: rgb(23, 23, 23)
   app-header-text-color: rgb(198, 203, 210)
+  # Main Interface Colors
   primary-color: rgb(138, 180, 248)
   light-primary-color: var(--primary-color)
   primary-background-color: rgb(23, 23, 23)
@@ -64,8 +64,7 @@ Google Dark Theme:
   # Toggles
   paper-toggle-button-checked-button-color: var(--switch-checked-button-color)
   paper-toggle-button-checked-bar-color: var(--switch-checked-track-color)
-  paper-toggle-button-unchecked-button-color: >
-    var(--switch-unchecked-button-color)
+  paper-toggle-button-unchecked-button-color: var(--switch-unchecked-button-color)
   paper-toggle-button-unchecked-bar-color: var(--switch-unchecked-track-color)
   # Table
   table-row-background-color: var(--primary-background-color)
