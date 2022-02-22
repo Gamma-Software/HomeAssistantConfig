@@ -1,0 +1,10 @@
+---
+platform: github
+access_token: !secret github_entity_token
+repositories:
+  - path: Gamma-Software/HomeAssistantConfig
+    name: Home Assistant config
+  - path: Gamma-Software/CapsuleScripts
+    name: Capsule Script
+  - path: GGamma-Software/totebag
+    name: Mon fourtout
