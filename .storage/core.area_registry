@@ -1,0 +1,49 @@
+{
+    "version": 1,
+    "minor_version": 1,
+    "key": "core.area_registry",
+    "data": {
+        "areas": [
+            {
+                "name": "Living Room",
+                "id": "living_room",
+                "picture": null
+            },
+            {
+                "name": "Kitchen",
+                "id": "kitchen",
+                "picture": null
+            },
+            {
+                "name": "Bedroom",
+                "id": "bedroom",
+                "picture": null
+            },
+            {
+                "name": "Restroom",
+                "id": "restroom",
+                "picture": null
+            },
+            {
+                "name": "Hallway",
+                "id": "hallway",
+                "picture": null
+            },
+            {
+                "name": "Bathroom",
+                "id": "bathroom",
+                "picture": null
+            },
+            {
+                "name": "Val Office",
+                "id": "val_office",
+                "picture": null
+            },
+            {
+                "name": "Pila Office",
+                "id": "pila_office",
+                "picture": null
+            }
+        ]
+    }
+}

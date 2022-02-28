@@ -8,7 +8,7 @@ custom_components/**/*.pyc
 image
 home-assistant*
 .vscode
-.storage
+.storage/*
 .cloudyamllint_configuration
 .google.token
 
@@ -22,3 +22,4 @@ known_devices.yaml
 aircast.xml
 traccar.xml
 .HA_VERSION
+!.storage/core.area_registry
