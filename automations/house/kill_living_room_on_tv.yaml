@@ -1,0 +1,23 @@
+---
+id: '1646041121412'
+alias: Switch off living room on TV
+description: ''
+trigger:
+- platform: state
+  entity_id: media_player.tv_samsung_7_series_50
+  from: 'on'
+  to: 'off'
+  for:
+    hours: 0
+    minutes: 2
+    seconds: 0
+condition:
+- condition: time
+  after: '23:00:00'
+  before: 07:00:00
+action:
+- service: light.turn_off
+  data: {}
+  target:
+    entity_id: light.living_room_lights
+mode: single
