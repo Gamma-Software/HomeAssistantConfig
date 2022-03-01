@@ -1,10 +1,24 @@
 ---
 alias: Shutdown home
-icon: "mdi:power"
-description: "Turn everything off in the house"
 sequence:
-  - service: light.turn_off
-    entity_id: all
-  - service: media_player.turn_off
-    target:
-      entity_id: all
+- service: light.turn_off
+  entity_id: all
+- service: media_player.turn_off
+  target:
+    entity_id: media_player.samsung_7_series_50
+    area_id:
+    - hallway
+    - kitchen
+    - living_room
+    - pila_office
+    - val_office
+  data: {}
+- condition: state
+  entity_id: media_player.spotify
+  state: playing
+- service: media_player.media_pause
+  data: {}
+  target:
+    entity_id: media_player.spotify
+mode: single
+icon: mdi:power
