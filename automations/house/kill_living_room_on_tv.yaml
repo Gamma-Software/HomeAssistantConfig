@@ -4,7 +4,7 @@ alias: Switch off living room on TV
 description: ''
 trigger:
 - platform: state
-  entity_id: media_player.tv_samsung_7_series_50
+  entity_id: media_player.samsung_7_series_50
   from: 'on'
   to: 'off'
   for:
