@@ -3,10 +3,10 @@
 # to be bothered
 name: Film time
 entities:
-  light.yeelight_ceiling_living_room: "off"
+  light.ceiling_light_living_room: "off"
   light.hue_play_1:
     state: "on"
   light.hue_play_2:
     state: "on"
-  light.hue_color_spot_1:
+  light.hue_color_spot_1_salon:
     state: "on"
