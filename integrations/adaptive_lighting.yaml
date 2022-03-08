@@ -1,0 +1,15 @@
+---
+adaptive_lighting:
+  lights:
+    - light.bathroom_lights
+    - light.chamber_lights
+    - light.entry_lights
+    - light.hallway_lights
+    - light.kitchen_lights
+    - light.living_room_lights
+    - light.pila_s_office_lights
+    - light.restroom_lights
+    - light.val_s_office_light
+  min_brightness: 30
+  sleep_brightness: 15
+  
