@@ -1,0 +1,6 @@
+---
+platform: group
+name: Val's Office Lights
+entities:
+  - light.hue_iris
+  - light.val_s_office_light
