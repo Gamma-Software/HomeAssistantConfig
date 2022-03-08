@@ -111,12 +111,11 @@ CONF_TMAX_PROBES = 300.0
 CONF_HMIN = 0.0
 CONF_HMAX = 99.9
 
-# Beacon types
-
 
 # Sensors with deviating temperature range
 KETTLES = ('YM-K1501', 'YM-K1501EU', 'V-SK152')
 PROBES = ('iBBQ-2', 'iBBQ-4', 'H5183')
+
 
 # Sensor entity description
 @dataclass
@@ -125,6 +124,7 @@ class BLEMonitorRequiredKeysMixin:
 
     sensor_class: str
     unique_id: str
+
 
 @dataclass
 class BLEMonitorSensorEntityDescription(
@@ -840,7 +840,7 @@ MEASUREMENT_DICT = {
     'T201'                    : [["temperature", "humidity", "battery", "voltage", "rssi"], [], []],
     'H5072/H5075'             : [["temperature", "humidity", "battery", "rssi"], [], []],
     'H5101/H5102/H5177'       : [["temperature", "humidity", "battery", "rssi"], [], []],
-    'H5051'                   : [["temperature", "humidity", "battery", "rssi"], [], []],
+    'H5051/H5071'             : [["temperature", "humidity", "battery", "rssi"], [], []],
     'H5074'                   : [["temperature", "humidity", "battery", "rssi"], [], []],
     'H5178'                   : [["temperature", "temperature outdoor", "humidity", "humidity outdoor", "battery", "rssi"], [], []],
     'H5179'                   : [["temperature", "humidity", "battery", "rssi"], [], []],
@@ -873,11 +873,13 @@ MEASUREMENT_DICT = {
     'iBBQ-4'                  : [["temperature probe 1", "temperature probe 2", "temperature probe 3", "temperature probe 4", "rssi"], [], []],
     'iBBQ-6'                  : [["temperature probe 1", "temperature probe 2", "temperature probe 3", "temperature probe 4", "temperature probe 5", "temperature probe 6", "rssi"], [], []],
     'IBS-TH'                  : [["temperature", "humidity", "battery", "rssi"], [], []],
+    'IBS-TH2 (T only)'        : [["temperature", "battery", "rssi"], [], []],
     'BEC07-5'                 : [["temperature", "humidity", "rssi"], [], []],
     'iBeacon'                 : [["rssi", "measured power", "cypress temperature", "cypress humidity"], ["uuid", "mac", "major", "minor"], []],  # mac can be dynamic
     'AltBeacon'               : [["rssi", "measured power"], ["uuid", "mac", "major", "minor"], []],  # mac can be dynamic
     'MyCO2'                   : [["temperature", "humidity", "co2", "rssi"], [], []],
     'HA BLE DIY'              : [["temperature", "rssi"], [], []],
+    'EClerk Eco'              : [["temperature", "humidity", "co2", "battery", "rssi"], [], []],
 }
 
 
@@ -939,7 +941,7 @@ MANUFACTURER_DICT = {
     'T201'                    : 'Brifit',
     'H5072/H5075'             : 'Govee',
     'H5101/H5102/H5177'       : 'Govee',
-    'H5051'                   : 'Govee',
+    'H5051/H5071'             : 'Govee',
     'H5074'                   : 'Govee',
     'H5178'                   : 'Govee',
     'H5179'                   : 'Govee',
@@ -973,15 +975,18 @@ MANUFACTURER_DICT = {
     'iBBQ-4'                  : 'Inkbird',
     'iBBQ-6'                  : 'Inkbird',
     'IBS-TH'                  : 'Inkbird',
+    'IBS-TH2 (T only)'        : 'Inkbird',
     'BEC07-5'                 : 'Jinou',
     'iBeacon'                 : 'Apple',
     'AltBeacon'               : 'Radius Networks',
     'HA BLE DIY'              : 'Home Assistant DIY',
+    'EClerk Eco'              : 'Relsib',
 }
 
 # Renamed model dictionary
 RENAMED_MODEL_DICT = {
     'H5051/H5074': 'H5074',
+    'H5051': 'H5051/H5071',
     'IBS-TH2': 'IBS-TH',
 }
 
