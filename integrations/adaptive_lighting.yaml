@@ -12,4 +12,3 @@ adaptive_lighting:
     - light.val_s_office_light
   min_brightness: 30
   sleep_brightness: 15
-  
