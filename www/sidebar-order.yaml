@@ -3,8 +3,11 @@ order:
     hide: true
   - item: developer tools
     href: /developer-tools/state
+    bottom: true
   - item: overview
   - item: history
     bottom: true
+    hide: true
   - item: logbook
     bottom: true
+    hide: true
