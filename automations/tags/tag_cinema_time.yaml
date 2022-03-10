@@ -3,9 +3,9 @@ id: '1637510437979'
 alias: La balise CinemaTime est analysée
 description: ''
 trigger:
-- platform: tag
-  tag_id: 60cfe082-7f44-41bf-9582-5bffb835786a
-condition: []
+  - platform: tag
+    tag_id: 60cfe082-7f44-41bf-9582-5bffb835786a
+  condition: []
 action:
-- scene: scene.film_time
+  - scene: scene.film_time
 mode: single
