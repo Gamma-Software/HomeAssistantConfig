@@ -26,11 +26,9 @@ lights_ct:
   #- light.hue_play_2
   - light.hue_runner_spot_1
   - light.hue_runner_spot_2
-  - light.ceiling_light_living_room
-  - light.ceiling_light_entry
-sleep_entity: "input_boolean.sleep_circadian"
+sleep_entity: input_boolean.sleep_circadian
 sleep_state: "on"
 sleep_colortemp: 3600
 sleep_brightness: 30
-disable_entity: "input_boolean.disable_circadian"
+disable_entity: input_boolean.disable_circadian
 disable_state: "on"
