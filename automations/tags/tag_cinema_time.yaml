@@ -5,7 +5,7 @@ description: ''
 trigger:
   - platform: tag
     tag_id: 60cfe082-7f44-41bf-9582-5bffb835786a
-  condition: []
+condition: []
 action:
   - scene: scene.film_time
 mode: single
