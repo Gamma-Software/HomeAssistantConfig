@@ -1,0 +1,36 @@
+---
+# Circadian Lighting slowly synchronizes your color changing lights with the
+# regular naturally occuring color temperature of the sky throughout the day.
+#
+# This switch allows me to enable or disable this feature on the lights
+# on our garden wall.
+#
+# https://github.com/claytonjn/hass-circadian_lighting
+#
+platform: circadian_lighting
+name: hue_circadian_lighting
+lights_brightness:
+  - light.hue_white_candle_1
+  - light.hue_white_candle_2
+lights_ct:
+  - light.hue_adore_spot_1
+  - light.hue_adore_spot_2
+  - light.hue_adore_spot_3
+  - light.hue_ambiance_wall_1
+  - light.hue_bulb
+  - light.hue_color_spot_1_salon
+  - light.hue_color_wall
+  - light.hue_color_wall_1
+  - light.hue_iris
+  #- light.hue_play_1 # Don't correct them because they are used for movie scene
+  #- light.hue_play_2
+  - light.hue_runner_spot_1
+  - light.hue_runner_spot_2
+  - light.ceiling_light_living_room
+  - light.ceiling_light_entry
+sleep_entity: "input_boolean.sleep_circadian"
+sleep_state: "on"
+sleep_colortemp: 3600
+sleep_brightness: 30
+disable_entity: "input_boolean.disable_circadian"
+disable_state: "on"

@@ -10,5 +10,7 @@
 # instead I manage them via the Home Assistant frontend.
 #
 input_boolean:
+  sleep_circadian:
+  disable_circadian:
   dim_down_light:
     name: The light has to dim down when on
