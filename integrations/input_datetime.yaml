@@ -8,4 +8,14 @@
 # I don't store my input datetime entities in my YAML configuration,
 # instead I manage them via the Home Assistant frontend.
 #
-input_datetime: ~
+input_datetime:
+  wakeup_workday:
+    name: Wakeup time on on workday
+    has_date: false
+    has_time: true
+    initial: 08:00
+  wakeup_weekend:
+    name: Wakeup time on on weekend
+    has_date: false
+    has_time: true
+    initial: 09:00

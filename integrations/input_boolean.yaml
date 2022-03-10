@@ -12,5 +12,7 @@
 input_boolean:
   sleep_circadian:
   disable_circadian:
+  at_home:
+    initial: true
   dim_down_light:
     name: The light has to dim down when on
