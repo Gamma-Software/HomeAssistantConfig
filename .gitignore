@@ -3,6 +3,7 @@
 # You can whitelist files/folders with !, these will not be ignored.
 
 custom_components/**/*.pyc
+custom_components/archive
 
 # Ignore folders.
 image
@@ -24,28 +25,3 @@ traccar.xml
 .HA_VERSION
 !.storage/core.area_registry
 .source_ssh
-custom_components/archive/myEnedis/21227351547910/lastCall.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentMonth_Req.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentMonth.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentMonthLastYear_Req.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentMonthLastYear.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentWeek_Req.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentWeek.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentWeekLastYear_Req.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentWeekLastYear.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentYear_Req.json
-custom_components/archive/myEnedis/21227351547910/updateCurrentYear.json
-custom_components/archive/myEnedis/21227351547910/updateDataYesterdayHCHP_Req.json
-custom_components/archive/myEnedis/21227351547910/updateDataYesterdayHCHP.json
-custom_components/archive/myEnedis/21227351547910/updateLast7Days_Req.json
-custom_components/archive/myEnedis/21227351547910/updateLast7Days.json
-custom_components/archive/myEnedis/21227351547910/updateLast7DaysDetails_Req.json
-custom_components/archive/myEnedis/21227351547910/updateLast7DaysDetails.json
-custom_components/archive/myEnedis/21227351547910/updateYesterday_Req.json
-custom_components/archive/myEnedis/21227351547910/updateYesterday.json
-custom_components/archive/myEnedis/21227351547910/updateYesterdayConsumptionMaxPower_Req.json
-custom_components/archive/myEnedis/21227351547910/updateYesterdayConsumptionMaxPower.json
-custom_components/archive/myEnedis/21227351547910/updateYesterdayLastYear_Req.json
-custom_components/archive/myEnedis/21227351547910/updateYesterdayLastYear.json
-custom_components/archive/myEnedis/21227351547910/updateYesterdayProduction_Req.json
-custom_components/archive/myEnedis/21227351547910/updateYesterdayProduction.json
