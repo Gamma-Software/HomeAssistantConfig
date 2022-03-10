@@ -1,0 +1,20 @@
+---
+# Circadian Lighting slowly synchronizes your color changing lights with the
+# regular naturally occuring color temperature of the sky throughout the day.
+#
+# This switch allows me to enable or disable this feature on the lights
+# on our garden wall.
+#
+# https://github.com/claytonjn/hass-circadian_lighting
+#
+platform: circadian_lighting
+name: yeelight_circadian_lighting
+lights_ct:
+  - light.ceiling_light_living_room
+  - light.ceiling_light_entry
+sleep_entity: input_boolean.sleep_circadian
+sleep_state: "on"
+sleep_colortemp: 3600
+sleep_brightness: 30
+disable_entity: input_boolean.disable_circadian
+disable_state: "on"
