@@ -1,0 +1,92 @@
+---
+alias: Wakeup !
+id: '77725653867798446682358792449696776342549337475793'
+description: ''
+mode: queued
+trigger:
+  - platform: time
+    at: input_datetime.wakeup_workday
+    id: on_workday
+  - platform: time
+    at: input_datetime.wakeup_weekend
+    id: on_weekend
+condition:
+  - condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.at_home
+        state: 'on'
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.rudloff
+            state: home
+          - condition: state
+            entity_id: person.priscillia
+            state: home
+      - condition: or
+        conditions:
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: on_workday
+              - condition: state
+                entity_id: binary_sensor.workday
+                state: 'on'
+          - condition: and
+            conditions:
+              - condition: trigger
+                id: on_weekend
+              - condition: state
+                entity_id: binary_sensor.weekend
+                state: 'on'
+action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.disable_circadian
+  - service: light.turn_on
+    data:
+      transition: 0
+      brightness_pct: 5
+      kelvin: 3500
+    target:
+      area_id: bedroom
+  - service: light.turn_on
+    data:
+      transition: 300
+      brightness_pct: 100
+      kelvin: 3500
+    target:
+      area_id: bedroom
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.couloir_2
+    data:
+      media_content_id: media-source://radio_browser/1cfb151d-a341-11e9-a787-52543be04c81
+      media_content_type: audio/mpeg
+    metadata:
+      title: France Info
+      thumbnail: >-
+        https://upload.wikimedia.org/wikipedia/fr/thumb/1/18/France_Info_-_2008.svg/768px-France_Info_-_2008.svg.png
+      media_class: music
+      children_media_class: null
+      navigateIds:
+        - {}
+        - media_content_type: app
+          media_content_id: media-source://radio_browser
+        - media_content_type: music
+          media_content_id: media-source://radio_browser/popular
+  - delay: # Delay 300 seconds c.f. 2nd action
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.disable_circadian
+  - service: media_player.turn_off
+    data: {}
+    target:
+      entity_id: media_player.couloir_2
