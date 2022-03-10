@@ -38,7 +38,7 @@ Thank you for being involved! :heart_eyes:
 
 ## Authors & contributors
 
-The original setup of this repository is by [Valentin Rudloff][valentin] and largely inspired by [Franck's homeassistant config][frenck's home].
+The original setup of this repository is by [Valentin Rudloff][valentin] and largely inspired by [Frenck's homeassistant config][frenck's home].
 
 ## License
 
