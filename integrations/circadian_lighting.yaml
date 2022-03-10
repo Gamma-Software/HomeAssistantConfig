@@ -7,6 +7,6 @@
 #
 # https://github.com/claytonjn/hass-circadian_lighting
 #
-circadian_lighting:
+circadian_lighting: ~
 #   sunset_time: input_datetime.home_low_light_start
 #   sunrise_time: input_datetime.home_low_light_end
