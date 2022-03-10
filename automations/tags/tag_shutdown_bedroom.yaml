@@ -1,0 +1,11 @@
+---
+id: '1637520379049'
+alias: La balise ShutdownAllBed est analysée
+description: ''
+mode: single
+trigger:
+  - platform: tag
+    tag_id: d0208043-9598-4873-9892-9714b4b6e40d
+condition: []
+action:
+  - service: script.shutdown_home

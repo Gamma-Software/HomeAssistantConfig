@@ -1,0 +1,11 @@
+---
+id: '1637510405644'
+alias: La balise ShutdownAllEnter est analysée
+description: ''
+trigger:
+- platform: tag
+  tag_id: ed5e502e-232f-41a8-a9bb-d34f6c200fc5
+condition: []
+action:
+- service: script.shutdown_home
+mode: single
