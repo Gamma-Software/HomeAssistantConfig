@@ -48,7 +48,7 @@ action:
   - service: light.turn_on
     data:
       transition: 0
-      brightness_pct: 5
+      brightness_pct: 1
       kelvin: 3500
     target:
       area_id: bedroom
@@ -86,7 +86,3 @@ action:
     data: {}
     target:
       entity_id: input_boolean.disable_circadian
-  - service: media_player.turn_off
-    data: {}
-    target:
-      entity_id: media_player.couloir_2
