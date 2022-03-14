@@ -10,6 +10,8 @@ condition:
   - condition: template
     value_template: >
       {{ ('old_state' in trigger.event.data and 'new_state' in trigger.event.data)
+         and ('brightness' in trigger.event.data.new_state.attributes and 'brightness' in trigger.event.data.old_state.attributes)
+         and ('color_temp' in trigger.event.data.new_state.attributes and 'color_temp' in trigger.event.data.old_state.attributes)
          and ( trigger.event.data.new_state.attributes.brightness != trigger.event.data.old_state.attributes.brightness
          or trigger.event.data.new_state.attributes.color_temp != trigger.event.data.old_state.attributes.color_temp)}}
   - condition: state
