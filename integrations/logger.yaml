@@ -13,3 +13,5 @@ logger:
     homeassistant.components.hue.sensor_base: info
     yeelight.main: info
     custom_components.myEnedis: debug
+    myEnedis: debug
+    myEnedis.main: debug
