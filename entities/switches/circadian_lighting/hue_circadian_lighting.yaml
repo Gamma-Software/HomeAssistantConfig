@@ -21,11 +21,12 @@ lights_ct:
   - light.hue_color_spot_1_salon
   - light.hue_color_wall
   - light.hue_color_wall_1
-  - light.hue_iris
+  #- light.hue_iris
   #- light.hue_play_1 # Don't correct them because they are used for movie scene
   #- light.hue_play_2
   - light.hue_runner_spot_1
   - light.hue_runner_spot_2
+min_brightness: 30
 sleep_entity: input_boolean.sleep_circadian
 sleep_state: "on"
 sleep_colortemp: 3600

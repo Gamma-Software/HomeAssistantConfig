@@ -12,6 +12,7 @@ name: yeelight_circadian_lighting
 lights_ct:
   - light.ceiling_light_living_room
   - light.ceiling_light_entry
+min_brightness: 30
 sleep_entity: input_boolean.sleep_circadian
 sleep_state: "on"
 sleep_colortemp: 3600
