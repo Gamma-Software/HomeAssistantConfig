@@ -43,6 +43,46 @@
                 "name": "Pila Office",
                 "id": "pila_office",
                 "picture": null
+            },
+            {
+                "name": "Cuisine",
+                "id": "cuisine",
+                "picture": null
+            },
+            {
+                "name": "Bureau Priscillia",
+                "id": "bureau_priscillia",
+                "picture": null
+            },
+            {
+                "name": "Bureau Valentin",
+                "id": "bureau_valentin",
+                "picture": null
+            },
+            {
+                "name": "Salle de bain",
+                "id": "salle_de_bain",
+                "picture": null
+            },
+            {
+                "name": "Chambre",
+                "id": "chambre",
+                "picture": null
+            },
+            {
+                "name": "Couloir",
+                "id": "couloir",
+                "picture": null
+            },
+            {
+                "name": "Toilette",
+                "id": "toilette",
+                "picture": null
+            },
+            {
+                "name": "Salon",
+                "id": "salon",
+                "picture": null
             }
         ]
     }
