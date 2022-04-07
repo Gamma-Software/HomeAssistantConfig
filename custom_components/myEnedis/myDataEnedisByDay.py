@@ -1,27 +1,22 @@
-
 try:
-    from .const import (
+    from .const import (  # isort:skip
         __nameMyEnedis__,
-        _formatDateYmd,
-        _formatDateYm01,
-        _formatDateY0101,
     )
 
 except ImportError:
-    from const import (
+    from const import (  # type: ignore[no-redef]
         __nameMyEnedis__,
-        _formatDateYmd,
-        _formatDateYm01,
-        _formatDateY0101,
     )
 
 import logging
-log = logging.getLogger(__nameMyEnedis__)
 
 from .myCheckData import myCheckData
-from .myDataControl import okDataControl
+from .myDataControl import getInformationDataControl, okDataControl
 
-class myDataEnedisByDay():
+log = logging.getLogger(__nameMyEnedis__)
+
+
+class myDataEnedisByDay:
     def __init__(self, myCalli, token, version, contrat):
         self.myCalli = myCalli
         self._value = 0
@@ -53,26 +48,43 @@ class myDataEnedisByDay():
     def getNbCall(self):
         return self._nbCall
 
-    def updateData(self, clefFunction, horairePossible=True, data=None, dateDeb=None, dateFin=None, withControl = False, dataControl = None):
+    def updateData(
+        self,
+        clefFunction,
+        horairePossible=True,
+        data=None,
+        dateDeb=None,
+        dateFin=None,
+        withControl=False,
+        dataControl=None,
+    ):
         self._nbCall = 0
         onLance = True
         if withControl:
-            if okDataControl( clefFunction, dataControl, dateDeb, dateFin ):
+            if okDataControl(clefFunction, dataControl, dateDeb, dateFin):
                 onLance = True
                 self._callOk = True
             else:
-                if ( not horairePossible ):
-                    onLance = False
+                if not horairePossible:
+                    onLance = True
+                    dateDeb, dateFin, self._callOk = getInformationDataControl(
+                        dataControl
+                    )
+                    if self._callOk is None:
+                        data = (
+                            None  # si on doit mettre à jour .... sauf si on est pas la
+                        )
                 else:
                     self._callOk = None
-                    data = None # si on doit mettre à jour .... sauf si on est pas la
+                    data = None  # si on doit mettre à jour .... sauf si on est pas la
+
         if onLance:
             self._dateDeb = dateDeb
             self._dateFin = dateFin
-            log.info("--updateData %s ( du %s au %s )--" %( clefFunction, dateDeb, dateFin))
+            log.info(f"--updateData {clefFunction} ( du {dateDeb} au {dateFin} )--")
             self._data = data
-            if (self._data == None):
-                if ( dateDeb == dateFin):
+            if self._data is None:
+                if dateDeb == dateFin:
                     self._value = 0
                 else:
                     self._data, callDone = self.CallgetData(dateDeb, dateFin)
@@ -91,9 +103,9 @@ class myDataEnedisByDay():
                 else:
                     self._value = 0
                 self._callOk = callDone
-            log.info("with update !! %s ( du %s au %s )--" %( clefFunction, dateDeb, dateFin))
-            log.info("updateData : data %s" % (self._data))
+            log.info(f"with update !! {clefFunction} ( du {dateDeb} au {dateFin} )--")
+            log.info(f"updateData : data {self._data}")
         else:
-            log.info("noupdate !! %s ( du %s au %s )--" %( clefFunction, dateDeb, dateFin))
-            log.info("no updateData : data %s" % (self._data))
+            log.info(f"noupdate !! {clefFunction} ( du {dateDeb} au {dateFin} )--")
+            log.info(f"no updateData : data {self._data}")
         return self._data
