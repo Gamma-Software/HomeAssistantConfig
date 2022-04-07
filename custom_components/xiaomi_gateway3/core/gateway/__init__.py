@@ -104,6 +104,8 @@ class XGateway(GateGW3, GateE1):
                 async for msg in self.mqtt:
                     # noinspection PyTypeChecker
                     asyncio.create_task(self.mqtt_message(msg))
+            except Exception as e:
+                self.debug(f"MQTT connection issue", exc_info=e)
             finally:
                 await self.mqtt.disconnect()
                 await self.mqtt.close()
@@ -158,6 +160,11 @@ class XGateway(GateGW3, GateE1):
         sh = None
         try:
             sh = await shell.connect(self.host)
+
+            if not await sh.only_one():
+                self.debug("Connection from a second Hass detected")
+                return False
+
             await sh.get_version()
 
             self.debug(f"Prepare gateway {sh.model} with firmware {sh.ver}")

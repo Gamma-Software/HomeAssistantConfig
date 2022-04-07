@@ -47,7 +47,7 @@ def sed(app: str, pattern: str, repl: str):
 # grep output to cloud and send it to MQTT, use awk because buffer
 PATCH_MIIO_MQTT = sed(
     "miio", "^ +miio_client .+$",
-    "pkill -f log/miio\nmiio_client -l 0 -o FILE_STORE -d $MIIO_PATH -n 128 | awk '/ot_agent_recv_handler_one.+(ble_event|properties_changed|heartbeat)|ot_agent_recv_handler_one.+?app_url/{print $0;fflush()}' | mosquitto_pub -t log/miio -l &"
+    "pkill -f log/miio\nmiio_client -l 0 -o FILE_STORE -d $MIIO_PATH -n 128 | awk '/ot_agent_recv_handler_one.+(ble_event|properties_changed|event_occured|heartbeat)|ot_agent_recv_handler_one.+?app_url/{print $0;fflush()}' | mosquitto_pub -t log/miio -l &"
 )
 # use patched silabs_ncp_bt from sourceforge and send stderr to MQTT
 PATCH_BLETOOTH_MQTT = sed(
@@ -178,8 +178,10 @@ class ShellGw3(TelnetShell):
         return True
 
     async def check_bin(self, filename: str, md5: str, url=None) -> bool:
-        """Check binary md5 and download it if needed."""
-        if md5 in await self.exec("md5sum /data/" + filename):
+        """Check binary md5 and if it is executable and download it if needed.
+        """
+        cmd = f"[ -x /data/{filename} ] && md5sum /data/{filename}"
+        if md5 in await self.exec(cmd):
             return True
         elif url:
             # files from sourceforge.net can take up to 3 minutes to download
