@@ -4,5 +4,3 @@ name: Val's Office Lights
 entities:
   - light.hue_iris
   - light.val_s_office_light
-  - light.hue_play_1_2
-  - light.hue_play_2_2
